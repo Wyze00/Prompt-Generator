@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-gray-900 text-gray-100;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .card {
+    @apply bg-gray-800 rounded-xl shadow-lg border border-gray-700 p-6;
+  }
+  
+  .code-block {
+    @apply bg-gray-900 border border-gray-700 rounded-lg p-4 font-mono text-sm overflow-x-auto;
+  }
+  
+  .section-title {
+    @apply text-2xl font-bold text-gray-100 mb-4 flex items-center gap-2;
+  }
+}
