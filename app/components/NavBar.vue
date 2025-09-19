@@ -26,6 +26,13 @@
                   dig
                 </NuxtLink>
               </div>
+              <div class="px-4 py-2 text-sm text-gray-400 font-medium">Enumeration</div>
+              <NuxtLink 
+                to="/enumeration/gobuster" 
+                class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+              >
+                gobuster
+              </NuxtLink>
             </div>
           </div>
           
