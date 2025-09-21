@@ -1,8 +1,19 @@
 # Command Prompt Maker
-## VIBE CODING WITH BOLT & GEMINI
 
 <p align="center">
-  <img src="URL_SCREENSHOT_PROYEK_ANDA" alt="Tampilan Command Prompt Maker" width="700"/>
+  <img src="./img/showcase1.png" alt="Tampilan Command Prompt Maker" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./img/showcase2.png" alt="Tampilan Command Prompt Maker" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./img/showcase3.png" alt="Tampilan Command Prompt Maker" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./img/showcase4.png" alt="Tampilan Command Prompt Maker" width="700"/>
 </p>
 
 Sebuah aplikasi web berbasis Nuxt.js untuk membuat dan mengelola *command prompt* untuk berbagai *cybersecurity tools*. Proyek ini memiliki alur kerja unik yang memungkinkan pembuatan halaman tool secara otomatis dari catatan yang disimpan di Discord.
@@ -154,3 +165,5 @@ Berikut adalah gambaran singkat tentang struktur folder utama:
 │   ├── fetch.js        # Script untuk fetch dari discord
 │   └── format.js       # Script untuk format fetchOutput
 ```
+
+## VIBE CODING WITH BOLT & GEMINI
