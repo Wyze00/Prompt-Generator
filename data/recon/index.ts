@@ -1,8 +1,7 @@
 import { digTool } from './dig';
-// Nantinya, impor tool lain di sini
-// import { digTool } from './dig';
+import { reconDns } from './dns';
 
-export const allTools = {
+export const recon = {
   dig: digTool,
-  // dig: digTool,
+  dns: reconDns,
 };
