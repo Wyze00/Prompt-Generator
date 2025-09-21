@@ -52,5 +52,20 @@ export const digTool: ITool = {
                 }
             ]
         }
-    ]
+    ],
+    documentation: {
+        overview: 'tools untuk query dns',
+        installation: 'sudo apt install dnsutils',
+        usage: [
+            {
+                mode: 'DIG',
+                text: 'dig',
+                options: `
+- {<domain> (domain name / ip)}
+- {<type> (tipe) | -x (reverse lookup)}
+- [@<nameServer> (name server)]                
+                `.trim()
+            }
+        ]
+    }
 }

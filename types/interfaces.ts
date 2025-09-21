@@ -55,4 +55,15 @@ export interface ITool {
     description: string;
     /** Daftar command yang dimiliki oleh tool ini */
     command: ICommand[];
+    documentation?: {
+        overview: string;
+        installation: string;
+        usage: IUsageCommand[];
+    };
+}
+
+export interface IUsageCommand {
+    mode: string; // Directory
+    text: string; // dir
+    options: string // 
 }

@@ -121,5 +121,30 @@ export const gobusterTool: ITool = {
                 { type: 'required', flags: [{ flag: '-w <wordlist>', description: 'Wordlist path', input: true }] }
             ]
         }
-    ]
+    ],
+    documentation: {
+      overview: 'Tool untuk brute force direktori, file, vhost, dns dan lainnya.',
+      installation: 'sudo apt install gobuster',
+      usage: [
+        {
+          mode: 'DIRECTORY',
+          text: 'gobuster dir',
+          options: `
+- {-u <url> (url)}
+  - [-xx <str> (some desc)]
+- {-w <wordlist> (wordlist path) | -x <str> (some desc)}
+- [-y <str> (some desc)]
+- [-z <str (some desc) | -1 <str> (some desc)]
+        `.trim(),
+        },
+        {
+          mode: 'DNS',
+          text: 'gobuster dns',
+          options: `
+- {-d <domain> (domain)}
+- {-w <wordlist> (wordlist path)}
+          `.trim(),
+        }
+      ]
+    },
 };

@@ -14,8 +14,61 @@
     </div>
 
     <div class="space-y-8">
+
+      <template v-if="tool.documentation">
+        <section class="card">
+          <h2 class="section-title">
+            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Overview
+          </h2>
+          <p class="text-gray-300">
+            {{ tool.documentation.overview }}
+          </p>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+            </svg>
+            Installation
+          </h2>
+          <div class="code-block relative group">
+            <code class="text-green-400">{{ tool.documentation.installation }}</code>
+            <button @click="copyToClipboard(tool.documentation.installation)" class="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-700 p-1 rounded">
+              <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            Usage
+          </h2>
+          <div class="space-y-6">
+            <div v-for="usageCmd in tool.documentation.usage" :key="usageCmd.mode">
+              <h3 class="text-lg font-semibold text-gray-200 uppercase">{{ usageCmd.mode }}</h3>
+              <p class="text-gray-300 font-mono mt-1 mb-2">{{ usageCmd.text }}</p>
+              <pre class="text-gray-300 text-sm font-mono bg-gray-900/50 p-4 rounded-lg overflow-x-auto">{{ usageCmd.options }}</pre>
+            </div>
+          </div>
+        </section>
+      </template>
+
       <section class="card">
-        <h2 class="section-title">Select Command</h2>
+        <h2 class="section-title">
+          <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          Select Command
+        </h2>
         <div class="grid md:grid-cols-2 gap-4">
           <button v-for="(command, index) in tool.command" :key="index" @click="selectedCommand = index" :class="['p-4 rounded-lg border-2 transition-all duration-200 text-left', selectedCommand === index ? 'border-green-500 bg-green-500/10' : 'border-gray-600 hover:border-gray-500']">
             <h3 class="font-semibold text-gray-100 mb-2">{{ command.name }}</h3>
@@ -25,7 +78,13 @@
       </section>
 
       <section v-if="selectedCommand !== null && tool.command[selectedCommand]" class="card">
-        <h2 class="section-title">Prompt Maker</h2>
+        <h2 class="section-title">
+          <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          Prompt Maker
+        </h2>
         <form @submit.prevent="generateCommand" class="space-y-6">
           <OptionGroup
             :groups="tool.command[selectedCommand]!.groups"
@@ -37,9 +96,14 @@
           </button>
         </form>
       </section>
-
+      
       <div v-if="generatedCommand" class="card">
-        <h3 class="text-xl font-bold text-gray-100 mb-4">Generated Command</h3>
+        <h3 class="text-2xl font-bold text-gray-100 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+          Generated Command
+        </h3>
         <div class="code-block relative group">
           <code class="text-green-400">{{ generatedCommand }}</code>
            <button @click="copyToClipboard(generatedCommand)" class="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-700 p-2 rounded hover:bg-gray-600">
@@ -52,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted, toRefs, computed } from 'vue';
+import { ref, reactive, watch, toRefs, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import type { ITool, IGroup } from '../../types/interfaces';
 import OptionGroup from '~/components/OptionGroup.vue';
@@ -160,8 +224,6 @@ const copyToClipboard = async (text: string) => {
   }
   try {
     await navigator.clipboard.writeText(text);
-    // Anda bisa menambahkan notifikasi sukses di sini, misalnya dengan toast
-    // alert('Command copied to clipboard!'); 
   } catch (err) {
     console.error('Failed to copy text: ', err);
   }
