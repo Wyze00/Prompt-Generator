@@ -12,34 +12,23 @@
         </div>
         
         <div class="flex items-center space-x-4">
-          <div class="relative group">
-            <button class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-              Tools
+          <div class="relative group/main">
+            <button class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center">
+              <span>Tools</span>
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div class="absolute left-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div class="absolute left-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg opacity-0 invisible group-hover/main:opacity-100 group-hover/main:visible transition-all duration-200 border border-gray-700">
               <div class="py-1">
-                <div class="px-4 py-2 text-sm text-gray-400 font-medium">Reconnaissance</div>
-                <NuxtLink 
-                  to="/recon/dig" 
-                  class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  dig
-                </NuxtLink>
+                <NavDropdownItem 
+                  v-for="link in navStructure" 
+                  :key="link.path" 
+                  :item="link" 
+                />
               </div>
-              <div class="px-4 py-2 text-sm text-gray-400 font-medium">Enumeration</div>
-              <NuxtLink 
-                to="/enumeration/gobuster" 
-                class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-              >
-                gobuster
-              </NuxtLink>
             </div>
           </div>
           
-          <NuxtLink 
-            to="/about" 
-            class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >
+          <NuxtLink to="/about" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium mr-50">
             About
           </NuxtLink>
         </div>
@@ -47,3 +36,8 @@
     </div>
   </nav>
 </template>
+
+<script setup lang="ts">
+import { navStructure } from '../../data/navigation';
+import NavDropdownItem from '~/components/NavDropdownItem.vue';
+</script>
