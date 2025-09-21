@@ -35,7 +35,7 @@
 
         <div v-else class="space-y-3">
           <div class="space-y-2">
-            <label class="flex items-center">
+            <label v-if="group.type === 'optional_one_of'" class="flex items-center">
               <input v-model="formData[`group_${keyPrefix}${groupIndex}`]" type="radio" :value="null" :name="`group_${keyPrefix}${groupIndex}`" class="mr-2 text-green-500 focus:ring-green-500" />
               <span class="text-sm text-gray-300">None</span>
             </label>
