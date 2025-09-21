@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",
+    "discord.js": "^14.22.1",
+    "dotenv": "^17.2.2",
     "nuxt": "^4.0.3",
     "tailwindcss": "^4.1.12",
     "vue": "^3.5.18",
