@@ -9,16 +9,6 @@ export const digTool: ITool = {
             description: 'Melakukan query DNS untuk mendapatkan informasi domain.',
             groups: [
                 {
-                    type: 'required',
-                    flags: [
-                        {
-                            flag: '<domain>',
-                            description: 'Domain atau alamat IP yang akan di-query',
-                            input: true
-                        }
-                    ]
-                },
-                {
                     type: 'optional_one_of',
                     description: 'Tentukan tipe query',
                     flags: [
@@ -31,6 +21,16 @@ export const digTool: ITool = {
                             flag: '-x',
                             description: 'Lakukan reverse lookup (untuk IP)',
                             input: false
+                        }
+                    ]
+                },
+                {
+                    type: 'required',
+                    flags: [
+                        {
+                            flag: '<domain>',
+                            description: 'Domain atau alamat IP yang akan di-query',
+                            input: true
                         }
                     ]
                 },
