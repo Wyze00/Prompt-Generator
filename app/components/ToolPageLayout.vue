@@ -9,7 +9,7 @@
           <span v-else class="text-green-400">{{ crumb.name }}</span>
         </template>
       </div>
-      <h1 class="text-4xl font-bold text-gray-100">{{ tool.name }} Command Generator</h1>
+      <h1 class="text-4xl font-bold text-gray-100">{{ tool.name.slice(0,1).toUpperCase() + tool.name.slice(1) }} Command Generator</h1>
       <p class="text-xl text-gray-300 mt-2">{{ tool.description }}</p>
     </div>
 

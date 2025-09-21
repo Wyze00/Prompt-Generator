@@ -72,59 +72,30 @@
       </section>
   
       <!-- Tools Preview -->
-      <section class="py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 class="text-3xl font-bold text-center text-gray-100 mb-12">
-            Available Tools
-          </h2>
-          
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <NuxtLink to="/recon/dig" class="card hover:border-green-500 transition-colors duration-200 group">
-              <div class="flex items-center mb-3">
-                <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center mr-3">
-                  <span class="font-mono text-green-400">dig</span>
-                </div>
-                <div>
-                  <h3 class="font-semibold text-gray-100">dig</h3>
-                  <span class="text-sm text-gray-400">DNS lookup</span>
-                </div>
-              </div>
-              <p class="text-gray-400 text-sm group-hover:text-gray-300">
-                DNS lookup utility for querying DNS name servers
-              </p>
-            </NuxtLink>
-            
-            <div class="card opacity-50">
-              <div class="flex items-center mb-3">
-                <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center mr-3">
-                  <span class="font-mono text-gray-500">nmap</span>
-                </div>
-                <div>
-                  <h3 class="font-semibold text-gray-400">nmap</h3>
-                  <span class="text-sm text-gray-500">Coming soon</span>
-                </div>
-              </div>
-              <p class="text-gray-500 text-sm">
-                Network exploration tool and security scanner
-              </p>
-            </div>
-            
-            <div class="card opacity-50">
-              <div class="flex items-center mb-3">
-                <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center mr-3">
-                  <span class="font-mono text-gray-500">curl</span>
-                </div>
-                <div>
-                  <h3 class="font-semibold text-gray-400">curl</h3>
-                  <span class="text-sm text-gray-500">Coming soon</span>
-                </div>
-              </div>
-              <p class="text-gray-500 text-sm">
-                Transfer data to/from servers
-              </p>
-            </div>
+      <section id="available-tools" class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-bold text-center text-gray-100 mb-25">
+          AVAILABLE TOOLS
+        </h1>
+        
+        <div class="space-y-16">
+          <div v-for="category in toolCategories" :key="category.name">
+            <h2 class="text-3xl font-bold text-gray-100 mb-8 uppercase text-center">
+              {{ category.name }}
+            </h2>
+            <ToolCardGrid
+              :data="category.data"
+              :base-path="category.basePath"
+            />
           </div>
         </div>
-      </section>
-    </div>
-  </template>
+
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { toolCategories } from '../../data/tools';
+import ToolCardGrid from '~/components/ToolCardGrid.vue';
+</script>
