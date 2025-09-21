@@ -47,7 +47,6 @@
           </button>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -75,9 +74,6 @@ const breadcrumbs = computed(() => {
   });
 });
 
-// ====================================================================
-// FUNGSI GENERATE COMMAND DENGAN LOGIKA BARU YANG LEBIH PINTAR
-// ====================================================================
 const generateCommand = () => {
   if (selectedCommand.value === null || !tool.value) {
     generatedCommand.value = ''; return;
@@ -99,40 +95,29 @@ const generateCommand = () => {
           const isFlagActive = !!value;
 
           if (isFlagActive) {
-            // --- BLOK LOGIKA BARU DIMULAI DI SINI ---
             if (flag.input) {
-              const flagString = flag.flag; // e.g., "-u <url>", "@<nameServer>", "<domain>"
+              const flagString = flag.flag;
               const flagParts = flagString.split(' ');
 
-              // Kasus 1: Argumen Posisi (contoh: "<domain>")
-              // Seluruh string adalah placeholder.
               if (flagString.startsWith('<') && flagString.endsWith('>')) {
                 commandParts.push(value);
               }
-              // Kasus 2: Flag dengan nilai terpisah (contoh: "-u <url>")
-              // Bagian pertama adalah flag, bagian kedua adalah placeholder.
               else if (flagParts.length > 1 && flagParts[1]!.startsWith('<')) {
                  commandParts.push(`${flagParts[0]} ${value}`);
               }
-              // Kasus 3: Flag dengan nilai terintegrasi (contoh: "@<nameServer>")
-              // Placeholder ada di dalam string flag itu sendiri.
               else if (flagString.includes('<')) {
                  commandParts.push(flagString.replace(/<.*?>/, value));
               }
-              // Kasus 4: Flag input standar lainnya (jika ada)
               else {
                 commandParts.push(`${flagString} ${value}`);
               }
             } else {
-              // Untuk checkbox (tidak ada input)
               commandParts.push(flag.flag);
             }
-            // --- BLOK LOGIKA BARU BERAKHIR DI SINI ---
           }
           if (flag.options) processGroups(flag.options, `${flagKey}_`, isFlagActive);
         }
       } else if (group.type === 'required_one_of' || group.type === 'optional_one_of') {
-        // ... (Logika untuk radio button SAMA PERSIS seperti sebelumnya, tidak perlu diubah)
         const radioGroupKey = `group_${currentGroupKeyPrefix}`;
         const selectedIndex = formData[radioGroupKey];
         if (selectedIndex !== undefined && selectedIndex !== null) {
@@ -143,7 +128,6 @@ const generateCommand = () => {
               const inputKey = `${currentGroupKeyPrefix}_${selectedIndex}_input`;
               const inputValue = formData[inputKey];
               if (inputValue) {
-                 // Terapkan juga logika baru di sini untuk radio button
                 const flagString = selectedFlag.flag;
                 const flagParts = flagString.split(' ');
                 if (flagParts.length > 1 && flagParts[1]!.startsWith('<')) {
@@ -169,8 +153,26 @@ const generateCommand = () => {
   generatedCommand.value = commandParts.join(' ').trim();
 };
 
-const copyToClipboard = async (text: string) => { /* ... Sama seperti sebelumnya ... */ };
-watch(tool, () => { /* ... Sama seperti sebelumnya ... */ }, { immediate: true });
+const copyToClipboard = async (text: string) => {
+  if (!navigator.clipboard) {
+    console.error('Clipboard API not available');
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    // Anda bisa menambahkan notifikasi sukses di sini, misalnya dengan toast
+    // alert('Command copied to clipboard!'); 
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+};
+
+watch(tool, () => {
+    Object.keys(formData).forEach(key => delete formData[key]);
+    selectedCommand.value = 0;
+    generateCommand();
+}, { immediate: true });
+
 watch(formData, () => { generateCommand() }, { deep: true });
 watch(selectedCommand, () => { generateCommand() });
 </script>
