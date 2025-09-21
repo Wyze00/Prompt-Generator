@@ -17,8 +17,6 @@ export interface IFlag {
     description: string;
     /** Apakah flag ini membutuhkan input dari user? (e.g., -u <url>) */
     input?: boolean;
-    /** Menandakan jika ini adalah argumen posisi, bukan flag (e.g., 'dig <domain>') */
-    isArgument?: boolean;
     /** Opsi turunan yang hanya bisa dipakai jika flag ini digunakan */
     options?: IGroup[];
 }

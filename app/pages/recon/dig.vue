@@ -182,7 +182,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ITool } from '~/types/interfaces'
+import type { ITool } from '../../../types/interfaces'
 
 const generatedCommand = ref('')
 const formData = reactive<Record<string, any>>({})
@@ -201,8 +201,7 @@ const tools: ITool = {
                         {
                             flag: '<domain>',
                             description: 'Domain atau alamat IP yang akan di-query',
-                            input: true,
-                            isArgument: true
+                            input: true
                         }
                     ]
                 },
@@ -213,8 +212,7 @@ const tools: ITool = {
                         {
                             flag: '<type>',
                             description: 'Tipe record (e.g., A, MX, TXT, ANY)',
-                            input: true,
-                            isArgument: true
+                            input: true
                         },
                         {
                             flag: '-x',
@@ -314,7 +312,7 @@ const generateCommand = () => {
         if (selectedFlag.input) {
           const inputValue = formData[`${selectedKey}_input`]
           if (inputValue) {
-            if (selectedFlag.isArgument) {
+            if (selectedFlag.flag.includes('<') && selectedFlag.flag.includes('>')) {
               command += ` ${inputValue}`
             } else {
               command += ` ${selectedFlag.flag} ${inputValue}`

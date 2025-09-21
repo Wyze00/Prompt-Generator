@@ -409,27 +409,27 @@ const generateCommand = () => {
           if (flag.input) {
             const flagName = flag.flag.split(' ')[0]
             command += ` ${flagName} ${value}`
-            
-            // Handle nested options
-            if (flag.options) {
-              flag.options.forEach((nestedGroup, nestedGroupIndex) => {
-                nestedGroup.flags.forEach((nestedFlag, nestedFlagIndex) => {
-                  const nestedKey = `${groupIndex}_${flagIndex}_${nestedGroupIndex}_${nestedFlagIndex}`
-                  const nestedValue = formData[nestedKey]
-                  
-                  if (nestedValue) {
-                    if (nestedFlag.input) {
-                      const nestedFlagName = nestedFlag.flag.split(' ')[0]
-                      command += ` ${nestedFlagName} ${nestedValue}`
-                    } else {
-                      command += ` ${nestedFlag.flag}`
-                    }
-                  }
-                })
-              })
-            }
           } else {
             command += ` ${flag.flag}`
+          }
+          
+          // Handle nested options
+          if (flag.options) {
+            flag.options.forEach((nestedGroup, nestedGroupIndex) => {
+              nestedGroup.flags.forEach((nestedFlag, nestedFlagIndex) => {
+                const nestedKey = `${groupIndex}_${flagIndex}_${nestedGroupIndex}_${nestedFlagIndex}`
+                const nestedValue = formData[nestedKey]
+                
+                if (nestedValue) {
+                  if (nestedFlag.input) {
+                    const nestedFlagName = nestedFlag.flag.split(' ')[0]
+                    command += ` ${nestedFlagName} ${nestedValue}`
+                  } else {
+                    command += ` ${nestedFlag.flag}`
+                  }
+                }
+              })
+            })
           }
         }
       })
@@ -442,8 +442,12 @@ const generateCommand = () => {
         if (selectedFlag.input) {
           const inputValue = formData[`${selectedKey}_input`]
           if (inputValue) {
-            const flagName = selectedFlag.flag.split(' ')[0]
-            command += ` ${flagName} ${inputValue}`
+            if (selectedFlag.flag.includes('<') && selectedFlag.flag.includes('>')) {
+              const flagName = selectedFlag.flag.split(' ')[0]
+              command += ` ${flagName} ${inputValue}`
+            } else if (flag.flag.includes('<') && flag.flag.includes('>')) {
+              command += ` ${selectedFlag.flag} ${inputValue}`
+            }
           }
         } else {
           command += ` ${selectedFlag.flag}`
