@@ -1,6 +1,6 @@
 <template>
   <div v-if="tool">
-    <ToolPageLayout :tool="tool" />
+    <ToolPageLayout :tool="tool" :key="route.path"/>
   </div>
   <div v-else class="text-center p-8">
     <h1 class="text-2xl text-red-400">Tool tidak ditemukan.</h1>

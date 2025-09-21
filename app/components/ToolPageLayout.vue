@@ -3,8 +3,18 @@
     <div class="mb-8">
       <div class="flex items-center text-sm text-gray-400 mb-2">
         <NuxtLink to="/" class="hover:text-green-400">Home</NuxtLink>
-        <span class="mx-2">/</span>
-        <span class="text-green-400">{{ tool.name }}</span>
+        
+        <template v-for="crumb in breadcrumbs" :key="crumb.to">
+          <span class="mx-2">/</span>
+          
+          <NuxtLink v-if="crumb.to" :to="crumb.to" class="hover:text-green-400">
+            {{ crumb.name }}
+          </NuxtLink>
+          
+          <span v-else class="text-green-400">
+            {{ crumb.name }}
+          </span>
+        </template>
       </div>
       <h1 class="text-4xl font-bold text-gray-100">{{ tool.name }} Command Generator</h1>
       <p class="text-xl text-gray-300 mt-2">{{ tool.description }}</p>
@@ -52,16 +62,35 @@
 import { ref, reactive, watch, onMounted, toRefs } from 'vue';
 import type { ITool, IGroup } from '../../types/interfaces';
 import OptionGroup from '~/components/OptionGroup.vue';
+import { useRoute } from 'vue-router';
 
 const props = defineProps<{
   tool: ITool;
 }>();
+
+const route = useRoute();
 
 const { tool } = toRefs(props);
 
 const selectedCommand = ref<number | null>(0);
 const generatedCommand = ref('');
 const formData = reactive<Record<string, any>>({});
+
+
+const breadcrumbs = computed(() => { // <--- TAMBAHKAN BLOK INI
+  return route.path
+    .split('/') // -> ['', 'enumeration', 'gobuster']
+    .filter(p => p) // -> ['enumeration', 'gobuster']
+    .map((segment, index, arr) => {
+      // Ubah nama menjadi kapital di huruf pertama
+      const name = segment.charAt(0).toUpperCase() + segment.slice(1);
+      return {
+        name: name,
+        // Buat path link, kecuali untuk item terakhir
+        to: index === arr.length - 1 ? null : '/' + arr.slice(0, index + 1).join('/'),
+      };
+    });
+});
 
 const generateCommand = () => {
   if (selectedCommand.value === null || !tool.value) {
