@@ -69,6 +69,11 @@ client.once('ready', async () => {
         for (const thread of allThreads) {
             console.log(`\n--- Mengambil pesan dari thread: "${thread.name}" ---`);
             const messages = await fetchAllMessages(thread);
+
+            if (messages.length === 0 || !messages[0].content.startsWith('## OVERVIEW\n\n')) {
+                console.log(`--- Thread "${thread.name}" DILEWATI karena pesan pertama tidak valid atau kosong. ---`);
+                continue; // Lanjut ke thread berikutnya
+            }
             
             const simplifiedMessages = messages.map(msg => ({
                 id: msg.id,
