@@ -2,7 +2,7 @@
   <div v-if="tool">
     <ToolPageLayout :tool="tool" :key="route.path"/>
   </div>
-  <div v-else class="text-center p-8">
+  <div v-else class="text-center p-8 min-h-dvh">
     <h1 class="text-2xl text-red-400">Tool tidak ditemukan.</h1>
     <p class="text-gray-400">URL Path: /recon/{{ slugParts.join('/') }}</p>
   </div>
