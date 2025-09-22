@@ -50,6 +50,6 @@ const formatToolName = (name: string | undefined) => {
 };
 
 const getToolSubtitle = (item: ITool) => {
-    return item.command?.[0]?.description || item.description;
+    return item.description;
 }
 </script>
