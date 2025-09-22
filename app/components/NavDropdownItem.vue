@@ -45,6 +45,5 @@ defineProps<{
   item: NavLink;
 }>();
 
-// State lokal untuk mengontrol visibilitas submenu
 const isSubmenuOpen = ref(false);
 </script>

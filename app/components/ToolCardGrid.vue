@@ -13,9 +13,6 @@
               <span class="text-sm text-gray-400">{{ getToolSubtitle(item) }}</span>
             </div>
           </div>
-          <!-- <p class="text-gray-400 text-sm group-hover:text-gray-300">
-            {{ item.description }}
-          </p> -->
         </NuxtLink>
 
       </template>

@@ -1,26 +1,26 @@
 export interface NavLink {
   name: string;
   path: string;
-  children?: NavLink[]; // Children bersifat opsional, untuk item yang punya submenu
+  children?: NavLink[]; 
 }
 
 export const navStructure: NavLink[] = [
   {
     name: 'Reconnaissance',
-    path: '/recon', // Halaman index untuk kategori Recon
+    path: '/recon', 
     children: [
       { name: 'Dig', path: '/recon/dig' },
       {
-        name: 'DNS', // Ini adalah sub-kategori
-        path: '/recon/dns', // Halaman index untuk sub-kategori DNS
+        name: 'DNS',
+        path: '/recon/dns', 
         children: [
           { name: 'Tool 1', path: '/recon/dns/tool1' },
           { name: 'Tool 2', path: '/recon/dns/tool2' },
         ]
       },
       {
-        name: 'Test', // Ini adalah sub-kategori
-        path: '/recon/test', // Halaman index untuk sub-kategori DNS
+        name: 'Test', 
+        path: '/recon/test',
         children: [
           { name: 'Tool 3', path: '/recon/dns/tool1' },
           { name: 'Tool 4', path: '/recon/dns/tool2' },
@@ -35,5 +35,4 @@ export const navStructure: NavLink[] = [
       { name: 'Gobuster', path: '/enumeration/gobuster' },
     ]
   },
-  // ... Tambahkan kategori utama lainnya di sini
 ];

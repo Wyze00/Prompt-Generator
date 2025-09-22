@@ -66,7 +66,6 @@
 <script setup lang="ts">
 import type { IGroup } from '../../types/interfaces';
 
-// Menggunakan defineProps untuk menerima data dari parent
 defineProps<{
   groups: IGroup[];
   formData: Record<string, any>;
@@ -74,11 +73,9 @@ defineProps<{
   isNested?: boolean;
 }>();
 
-// --- Helper Functions ---
-
 const getPlaceholder = (flag: string) => {
   const match = flag.match(/<([^>]+)>/);
-  return match ? match[1] : ''; // Ekstrak teks di dalam <>
+  return match ? match[1] : ''; 
 };
 
 const getGroupTitle = (type: string) => {

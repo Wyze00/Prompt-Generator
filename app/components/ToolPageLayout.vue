@@ -71,7 +71,7 @@
         </h2>
         <div class="grid md:grid-cols-2 gap-4">
           <button v-for="(command, index) in tool.command" :key="index" @click="selectedCommand = index" :class="['p-4 rounded-lg border-2 transition-all duration-200 text-left', selectedCommand === index ? 'border-green-500 bg-green-500/10' : 'border-gray-600 hover:border-gray-500']">
-            <h3 class="font-semibold text-gray-100 mb-2">{{ command.mode ? command.mode : command.name }}</h3>
+            <h3 class="font-semibold text-gray-100 mb-2">{{ command.mode }}</h3>
             <p class="text-sm text-gray-400">{{ command.description }}</p>
           </button>
         </div>

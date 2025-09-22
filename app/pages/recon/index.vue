@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import ToolList from '~/components/ToolList.vue';
-import { recon } from '../../../data/recon'; // Impor data dari index recon
+import { recon } from '../../../data/recon'; 
 
 useHead({
   title: 'Reconnaissance Tools'

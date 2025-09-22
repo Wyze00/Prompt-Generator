@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { recon } from '../../../data/recon'; // Impor dari index recon
+import { recon } from '../../../data/recon'; 
 import ToolPageLayout from '~/components/ToolPageLayout.vue';
 import type { ITool } from '../../../types/interfaces';
 
@@ -18,24 +18,19 @@ const route = useRoute();
 const slugParts = route.params.slug as string[];
 let tool: ITool | null = null;
 
-// Logika untuk mencari tool berdasarkan panjang array slug
 if (slugParts.length === 1) {
-  // Kasus: /recon/dig
   const toolName = slugParts[0] as keyof typeof recon;
   const found = recon[toolName];
-  // Pastikan yang ditemukan bukan kategori
   if (found && !found.hasOwnProperty('name')) { 
-    tool = null; // Ini adalah objek kategori, bukan tool
+    tool = null; 
   } else {
     tool = found as ITool;
   }
 
 } else if (slugParts.length === 2) {
-  // Kasus: /recon/dns/tool1
   const category = slugParts[0] as keyof typeof recon;
   const toolName: string = slugParts[1] as string;
 
-  // Cek apakah kategori ada dan merupakan objek
   if (recon[category] && typeof recon[category] === 'object') {
     tool = (recon[category] as any)[toolName];
   }

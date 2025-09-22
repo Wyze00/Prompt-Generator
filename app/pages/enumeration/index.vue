@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import ToolList from '~/components/ToolList.vue';
-import { enumeration } from '../../../data/enumeration'; // Impor data dari index recon
+import { enumeration } from '../../../data/enumeration'; 
 
 useHead({
   title: 'Enumertion Tools'

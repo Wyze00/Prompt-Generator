@@ -38,7 +38,7 @@ export interface IGroup {
  */
 export interface ICommand {
     /** Nama command */
-    mode?: string;
+    mode: string;
     name: string;
     /** Deskripsi singkat tentang fungsi command */
     description: string;

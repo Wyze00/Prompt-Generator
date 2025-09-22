@@ -15,7 +15,6 @@ const client = new Client({
     ]
 });
 
-// Fungsi ini TIDAK BERUBAH. Fungsinya bagus dan bisa dipakai ulang untuk channel/thread.
 async function fetchAllMessages(channel) {
     let allMessages = [];
     let lastId;
@@ -34,7 +33,6 @@ async function fetchAllMessages(channel) {
     return allMessages;
 }
 
-// PERUBAHAN UTAMA ADA DI SINI
 client.once('ready', async () => {
     console.log(`Bot telah login sebagai ${client.user.tag}!`);
 
