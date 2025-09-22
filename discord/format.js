@@ -6,7 +6,7 @@ dotenv.config({path: './.env'});
 // --- KONFIGURASI ---
 const CHANNEL_NAME = process.env.CHANNEL_RECON;
 const INPUT_FILE = `./discord/fetchOutput/${CHANNEL_NAME}.json`; // Path ke file JSON dari Discord
-const OUTPUT_DIR = `./discord/formatOutput/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
+const OUTPUT_DIR = `./data/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
 // --------------------
 
 // ====================================================================
@@ -88,9 +88,19 @@ function parseUsage(usageText) {
 
   return modeBlocks.map(block => {
     const lines = block.trim().split('\n');
-    const mode = lines.shift().trim();
-    const content = lines.join('\n').trim();
+    const headerLine = lines.shift().trim();
 
+    let mode = headerLine;
+    let description = '';
+    
+    // Gunakan regex untuk mengekstrak MODE dan DESKRIPSI dari header
+    const headerMatch = headerLine.match(/^(.+?)\s*\((.*?)\)$/);
+    if (headerMatch) {
+      mode = headerMatch[1].trim();
+      description = headerMatch[2].trim();
+    }
+    
+    const content = lines.join('\n').trim();
     const textMatch = content.match(/-\s*\*\*(.*?)\*\*/);
     const text = textMatch ? textMatch[1].trim() : '';
     
@@ -102,7 +112,11 @@ function parseUsage(usageText) {
       options = content;
     }
     
-    return { mode, text, options };
+    return {
+      mode: headerLine,                // Untuk `command.mode`
+      text: text,                // Untuk `command.name` & `documentation.usage.text`
+      options: options.replaceAll('  ', ''),
+    };
   });
 }
 
@@ -145,7 +159,10 @@ function main() {
     const commands = docData.usage.map(usageCmd => {
         const lines = usageCmd.options.split('\n').filter(l => l.trim() !== '' && l.trim().startsWith('-'));
         const groups = lines.map(line => parseLineToGroup(line));
-        return { name: usageCmd.text, description: usageCmd.mode, groups: groups };
+        const mode = usageCmd.mode;
+        const realMode = mode.match(/[A-Za-z]*/)[0];
+        const description = mode.match(/\(([A-Za-z0-9 ]*)\)/);
+        return { name: usageCmd.text, mode: realMode, description: description ? description[1] : '', groups: groups};
     });
     const toolObject = {
       name: toolName,
