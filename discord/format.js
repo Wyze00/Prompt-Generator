@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config({path: './.env'});
 
 // --- KONFIGURASI ---
-const CHANNEL_NAME = process.env.CHANNEL_RECON;
+const CHANNEL_NAME = process.env.CHANNEL_ENUMERATION;
 const INPUT_FILE = `./discord/fetchOutput/${CHANNEL_NAME}.json`; // Path ke file JSON dari Discord
-const OUTPUT_DIR = `./data/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
+const OUTPUT_DIR = `./discord/formatOutput/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
 // --------------------
 
 // ====================================================================

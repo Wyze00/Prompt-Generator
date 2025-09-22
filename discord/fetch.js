@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config({path: './.env'});
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-const CHANNEL_ID = process.env.CHANNEL_RECON_ID;
-const CHANNEL_NAME = process.env.CHANNEL_RECON;
+const CHANNEL_ID = process.env.CHANNEL_ENUMERATION_ID;
+const CHANNEL_NAME = process.env.CHANNEL_ENUMERATION;
 
 const client = new Client({
     intents: [

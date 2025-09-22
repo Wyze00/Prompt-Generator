@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch, toRefs, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import type { ITool, IGroup } from '../../types/interfaces';
+import type { ITool, IGroup, IFlag } from '../../types/interfaces'; // Pastikan IFlag diimpor
 import OptionGroup from '~/components/OptionGroup.vue';
 
 const props = defineProps<{
@@ -138,6 +138,9 @@ const breadcrumbs = computed(() => {
   });
 });
 
+// ====================================================================
+// FUNGSI GENERATE COMMAND BARU YANG SUDAH DIPERBAIKI TOTAL
+// ====================================================================
 const generateCommand = () => {
   if (selectedCommand.value === null || !tool.value) {
     generatedCommand.value = ''; return;
@@ -147,75 +150,94 @@ const generateCommand = () => {
   
   const commandParts: string[] = [commandDef.name];
 
-  const processGroups = (groups: IGroup[], keyPrefix: string, isParentActive: boolean) => {
-    if (!isParentActive) return;
-
+  const processGroups = (groups: IGroup[], keyPrefix: string) => {
     for (const [groupIndex, group] of groups.entries()) {
       const currentGroupKeyPrefix = `${keyPrefix}${groupIndex}`;
+
+      // --- Logika untuk grup 'required' dan 'optional' ---
       if (group.type === 'required' || group.type === 'optional') {
         for (const [flagIndex, flag] of group.flags.entries()) {
           const flagKey = `${currentGroupKeyPrefix}_${flagIndex}`;
-          const value = formData[flagKey];
-          const isFlagActive = !!value;
+          let isFlagActive = false;
 
-          if (isFlagActive) {
-            if (flag.input) {
-              const flagString = flag.flag;
-              const flagParts = flagString.split(' ');
+          if (flag.input) {
+            const placeholders = [...flag.flag.matchAll(/<([^>]+)>/g)].map(m => m[1]);
+            let resultString = flag.flag;
+            let allInputsFilled = placeholders.length > 0;
 
-              if (flagString.startsWith('<') && flagString.endsWith('>')) {
-                commandParts.push(value);
+            for (const placeholderName of placeholders) {
+              const value = formData[`${flagKey}_${placeholderName}`];
+              if (value) {
+                resultString = resultString.replace(`<${placeholderName}>`, value);
+              } else {
+                allInputsFilled = false;
               }
-              else if (flagParts.length > 1 && flagParts[1]!.startsWith('<')) {
-                 commandParts.push(`${flagParts[0]} ${value}`);
-              }
-              else if (flagString.includes('<')) {
-                 commandParts.push(flagString.replace(/<.*?>/, value));
-              }
-              else {
-                commandParts.push(`${flagString} ${value}`);
-              }
-            } else {
+            }
+
+            if (allInputsFilled) {
+              commandParts.push(resultString);
+              isFlagActive = true;
+            }
+          } else { // Checkbox
+            if (formData[flagKey]) {
               commandParts.push(flag.flag);
+              isFlagActive = true;
             }
           }
-          if (flag.options) processGroups(flag.options, `${flagKey}_`, isFlagActive);
+
+          if (flag.options) {
+            processGroups(flag.options, `${flagKey}_`);
+          }
         }
-      } else if (group.type === 'required_one_of' || group.type === 'optional_one_of') {
+      } 
+      // --- Logika untuk grup '..._one_of' ---
+      else if (group.type === 'required_one_of' || group.type === 'optional_one_of') {
         const radioGroupKey = `group_${currentGroupKeyPrefix}`;
         const selectedIndex = formData[radioGroupKey];
+
         if (selectedIndex !== undefined && selectedIndex !== null) {
           const selectedFlag = group.flags[selectedIndex];
           if (selectedFlag) {
+            const flagKey = `${currentGroupKeyPrefix}_${selectedIndex}`;
             let isFlagActive = false;
+
             if (selectedFlag.input) {
-              const inputKey = `${currentGroupKeyPrefix}_${selectedIndex}_input`;
-              const inputValue = formData[inputKey];
-              if (inputValue) {
-                const flagString = selectedFlag.flag;
-                const flagParts = flagString.split(' ');
-                if (flagParts.length > 1 && flagParts[1]!.startsWith('<')) {
-                    commandParts.push(`${flagParts[0]} ${inputValue}`);
-                } else if (flagString.includes('<')) {
-                    commandParts.push(flagString.replace(/<.*?>/, inputValue));
+              const placeholders = [...selectedFlag.flag.matchAll(/<([^>]+)>/g)].map(m => m[1]);
+              let resultString = selectedFlag.flag;
+              let allInputsFilled = placeholders.length > 0;
+
+              for (const placeholderName of placeholders) {
+                // [PERBAIKAN KUNCI]: Tambahkan akhiran '_input'
+                const value = formData[`${flagKey}_${placeholderName}_input`];
+                if (value) {
+                  resultString = resultString.replace(`<${placeholderName}>`, value);
                 } else {
-                    commandParts.push(`${flagString} ${inputValue}`);
+                  allInputsFilled = false;
                 }
+              }
+
+              if (allInputsFilled) {
+                commandParts.push(resultString);
                 isFlagActive = true;
               }
-            } else {
+            } else { // Radio button tanpa input
               commandParts.push(selectedFlag.flag);
               isFlagActive = true;
             }
-            if (selectedFlag.options) processGroups(selectedFlag.options, `${currentGroupKeyPrefix}_${selectedIndex}_`, isFlagActive);
+
+            if (selectedFlag.options) {
+              processGroups(selectedFlag.options, `${flagKey}_`);
+            }
           }
         }
       }
     }
   };
-  processGroups(commandDef.groups, '', true);
+  
+  processGroups(commandDef.groups, '');
   generatedCommand.value = commandParts.join(' ').trim();
 };
+
 
 const copyToClipboard = async (text: string) => {
   if (!navigator.clipboard) {

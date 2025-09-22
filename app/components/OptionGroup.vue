@@ -11,24 +11,38 @@
 
         <div v-if="group.type === 'required' || group.type === 'optional'" class="space-y-3">
           <div v-for="(flag, flagIndex) in group.flags" :key="flagIndex">
-            <label class="block text-sm font-medium text-gray-300 mb-2">
-              {{ flag.flag }}
-              <span v-if="group.type === 'required'" class="text-red-400">*</span>
-            </label>
-            <input v-if="flag.input" v-model="formData[`${keyPrefix}${groupIndex}_${flagIndex}`]" type="text" :placeholder="getPlaceholder(flag.flag)" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-gray-100 placeholder-gray-400 focus:border-green-500 focus:ring-1 focus:ring-green-500" :required="group.type === 'required'" />
-            <label v-else class="flex items-center">
-              <input v-model="formData[`${keyPrefix}${groupIndex}_${flagIndex}`]" type="checkbox" class="mr-2 rounded bg-gray-700 border-gray-600 text-green-500 focus:ring-green-500" :required="group.type === 'required'"/>
-              <span class="text-sm text-gray-300">{{ flag.flag }}</span>
-            </label>
-            <p class="text-xs text-gray-400 mt-1">{{ flag.description }}</p>
+            
+            <div v-if="flag.input">
+              <label class="block text-sm font-medium text-gray-300 mb-2">
+                {{ flag.flag }}
+                <span v-if="group.type === 'required'" class="text-red-400">*</span>
+              </label>
 
-            <div v-if="flag.options && formData[`${keyPrefix}${groupIndex}_${flagIndex}`]" class="ml-6 mt-4">
-              <OptionGroup
-                :groups="flag.options"
-                :form-data="formData"
-                :key-prefix="`${keyPrefix}${groupIndex}_${flagIndex}_`"
-                :is-nested="true"
-              />
+              <div v-for="placeholder in getPlaceholders(flag.flag)" :key="placeholder" class="mb-3">
+                <label v-if="getPlaceholders(flag.flag).length > 1" class="block text-xs font-medium text-green-400 mb-1">
+                  {{ placeholder }}
+                </label>
+                <input
+                  v-model="formData[`${keyPrefix}${groupIndex}_${flagIndex}_${placeholder}`]"
+                  type="text"
+                  :placeholder="placeholder"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-gray-100 placeholder-gray-400 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                  :required="group.type === 'required'"
+                />
+              </div>
+              <p class="text-xs text-gray-400 -mt-2">{{ flag.description }}</p>
+            </div>
+            
+            <div v-else>
+              <label class="flex items-center">
+                <input v-model="formData[`${keyPrefix}${groupIndex}_${flagIndex}`]" type="checkbox" class="mr-2 rounded bg-gray-700 border-gray-600 text-green-500 focus:ring-green-500"/>
+                <span class="text-sm text-gray-300">{{ flag.flag }}</span>
+              </label>
+              <p class="text-xs text-gray-400 mt-1">{{ flag.description }}</p>
+            </div>
+
+            <div v-if="flag.options && isFlagActive(flag, groupIndex, flagIndex)" class="ml-6 mt-4">
+              <OptionGroup :groups="flag.options" :form-data="formData" :key-prefix="`${keyPrefix}${groupIndex}_${flagIndex}_`" :is-nested="true" />
             </div>
           </div>
         </div>
@@ -44,16 +58,27 @@
                 <input v-model="formData[`group_${keyPrefix}${groupIndex}`]" type="radio" :value="flagIndex" :name="`group_${keyPrefix}${groupIndex}`" :required="group.type === 'required_one_of'" class="mr-2 text-green-500 focus:ring-green-500" />
                 <span class="text-sm text-gray-300">{{ flag.flag }}</span>
               </label>
-              <input v-if="flag.input && formData[`group_${keyPrefix}${groupIndex}`] === flagIndex" v-model="formData[`${keyPrefix}${groupIndex}_${flagIndex}_input`]" type="text" :placeholder="getPlaceholder(flag.flag)" class="w-full ml-6 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-gray-100 placeholder-gray-400 focus:border-green-500 focus:ring-1 focus:ring-green-500" :required="group.type === 'required_one_of'" />
-              <p class="text-xs text-gray-400 mt-1 ml-6">{{ flag.description }}</p>
+              
+              <div v-if="flag.input && formData[`group_${keyPrefix}${groupIndex}`] === flagIndex" class="ml-6 mt-2">
+                <div v-for="placeholder in getPlaceholders(flag.flag)" :key="placeholder" class="mb-3">
+                   <label v-if="getPlaceholders(flag.flag).length > 1" class="block text-sm font-medium text-green-400 mb-2">
+                    {{ placeholder }}
+                    <span v-if="group.type === 'required_one_of'" class="text-red-400">*</span>
+                  </label>
+                  <input
+                    v-model="formData[`${keyPrefix}${groupIndex}_${flagIndex}_${placeholder}_input`]"
+                    type="text"
+                    :placeholder="placeholder"
+                    class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-gray-100 placeholder-gray-400 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                    :required="group.type === 'required_one_of'"
+                  />
+                </div>
+                <p class="text-xs text-gray-400 -mt-2">{{ flag.description }}</p>
+              </div>
+              <p v-else-if="!flag.input" class="text-xs text-gray-400 mt-1">{{ flag.description }}</p>
 
               <div v-if="flag.options && formData[`group_${keyPrefix}${groupIndex}`] === flagIndex" class="ml-6 mt-4">
-                <OptionGroup
-                  :groups="flag.options"
-                  :form-data="formData"
-                  :key-prefix="`${keyPrefix}${groupIndex}_${flagIndex}_`"
-                  :is-nested="true"
-                />
+                <OptionGroup :groups="flag.options" :form-data="formData" :key-prefix="`${keyPrefix}${groupIndex}_${flagIndex}_`" :is-nested="true" />
               </div>
             </div>
           </div>
@@ -64,18 +89,21 @@
 </template>
 
 <script setup lang="ts">
-import type { IGroup } from '../../types/interfaces';
+import type { IGroup, IFlag } from '../../types/interfaces';
 
-defineProps<{
+const props = defineProps<{
   groups: IGroup[];
   formData: Record<string, any>;
   keyPrefix: string;
   isNested?: boolean;
 }>();
 
-const getPlaceholder = (flag: string) => {
-  const match = flag.match(/<([^>]+)>/);
-  return match ? match[1] : ''; 
+const getPlaceholders = (flagStr: string): string[] => {
+  const matches = flagStr.match(/<([^>]+)>/g);
+  if (!matches) {
+    return [flagStr.split(' ')[0]]; 
+  }
+  return matches.map(m => m.slice(1, -1));
 };
 
 const getGroupTitle = (type: string) => {
@@ -106,5 +134,14 @@ const getGroupTextColor = (type: string) => {
     case 'optional_one_of': return 'text-purple-400'
     default: return 'text-gray-400'
   }
+};
+
+const isFlagActive = (flag: IFlag, groupIndex: number, flagIndex: number): boolean => {
+  const flagKey = `${props.keyPrefix}${groupIndex}_${flagIndex}`;
+  if (flag.input) {
+    const placeholders = getPlaceholders(flag.flag);
+    return placeholders.some(p => !!props.formData[`${flagKey}_${p}`]);
+  }
+  return !!props.formData[flagKey];
 };
 </script>
