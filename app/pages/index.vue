@@ -12,8 +12,8 @@
               Generate and customize command-line tools with interactive options. Perfect for penetration testers, developers, and system administrators.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <NuxtLink to="/recon/dig" class="btn-primary text-lg px-8 py-3">
-                Try dig Command
+              <NuxtLink :to="randomToolLink" class="btn-primary text-lg px-8 py-3">
+                Try a Random Tool
               </NuxtLink>
               <a href="#available-tools" class="btn-secondary text-lg px-8 py-3">
                 Browse Tools
@@ -96,6 +96,26 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { toolCategories } from '../../data/tools';
 import ToolCardGrid from '~/components/ToolCardGrid.vue';
+
+const randomToolLink: globalThis.Ref<string, string | undefined> = ref('/recon/dig');
+
+onMounted(() => {
+  const allLinks: string[] = [];
+  toolCategories.forEach(category => {
+    Object.keys(category.data).forEach(toolKey => {
+      if (category.data[toolKey]!.command) {
+        allLinks.push(`${category.basePath}/${toolKey}`);
+      }
+    });
+  });
+
+  if (allLinks.length > 0) {
+    const randomIndex = Math.floor(Math.random() * allLinks.length);
+    randomToolLink.value = allLinks[randomIndex];
+  }
+});
+
 </script>

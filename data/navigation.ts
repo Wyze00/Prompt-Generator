@@ -1,8 +1,4 @@
-export interface NavLink {
-  name: string;
-  path: string;
-  children?: NavLink[]; 
-}
+import type { NavLink } from '../types/navlink';
 
 export const navStructure: NavLink[] = [
   {
