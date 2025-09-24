@@ -6,7 +6,7 @@
         <NuxtLink v-if="isTool(item)" :to="`${basePath}/${key}`" class="card hover:border-green-500 transition-colors duration-200 group">
           <div class="flex items-center mb-3">
             <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center mr-3">
-              <span class="font-mono text-green-400">{{ item.name.slice(0,1) }}</span>
+              <span class="font-mono text-green-400">{{ item.name.slice(0,1).toUpperCase() }}</span>
             </div>
             <div>
               <h3 class="font-semibold text-gray-100 font-bold">{{ formatToolName(item.name) }}</h3>

@@ -15,9 +15,9 @@
               <NuxtLink to="/recon/dig" class="btn-primary text-lg px-8 py-3">
                 Try dig Command
               </NuxtLink>
-              <button class="btn-secondary text-lg px-8 py-3">
+              <a href="#available-tools" class="btn-secondary text-lg px-8 py-3">
                 Browse Tools
-              </button>
+              </a>
             </div>
           </div>
         </div>
