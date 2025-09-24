@@ -118,4 +118,7 @@ onMounted(() => {
   }
 });
 
+useHead({
+  title: 'Command Prompt Generator'
+});
 </script>

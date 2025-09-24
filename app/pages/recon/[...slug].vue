@@ -37,6 +37,6 @@ if (slugParts.length === 1) {
 }
 
 useHead({
-  title: tool ? `${tool.name} Generator` : 'Tool Not Found'
+  title: tool ? `${tool.name.slice(0,1).toUpperCase() + tool.name.slice(1)} Generator` : 'Tool Not Found'
 });
 </script>

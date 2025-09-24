@@ -35,6 +35,6 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'About - Command Prompt Generator'
+  title: 'Command Prompt Generator'
 });
 </script>
