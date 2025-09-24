@@ -4,8 +4,15 @@ import dotenv from 'dotenv';
 dotenv.config({path: './.env'});
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-const CHANNEL_ID = process.env.CHANNEL_ENUMERATION_ID;
-const CHANNEL_NAME = process.env.CHANNEL_ENUMERATION;
+
+const category = process.argv[2];
+if (!category) {
+  console.error('Error: Harap tentukan kategori (contoh: node fetch.js recon)');
+  process.exit(1);
+}
+
+const CHANNEL_ID = process.env[`CHANNEL_${category.toUpperCase()}_ID`];
+const CHANNEL_NAME = category;
 
 const client = new Client({
     intents: [

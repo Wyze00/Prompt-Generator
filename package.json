@@ -7,7 +7,11 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "fetch:recon": "node discord/fetch.js recon",
+    "format:recon": "node discord/format.js recon",
+    "fetch:enumeration": "node discord/fetch.js enumeration",
+    "format:enumeration": "node discord/format.js enumeration"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",

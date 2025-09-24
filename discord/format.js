@@ -4,9 +4,14 @@ import dotenv from 'dotenv';
 dotenv.config({path: './.env'});
 
 // --- KONFIGURASI ---
-const CHANNEL_NAME = process.env.CHANNEL_ENUMERATION;
-const INPUT_FILE = `./discord/fetchOutput/${CHANNEL_NAME}.json`; // Path ke file JSON dari Discord
-const OUTPUT_DIR = `./discord/formatOutput/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
+const category = process.argv[2];
+if (!category) {
+  console.error('Error: Harap tentukan kategori (contoh: node format.js recon)');
+  process.exit(1);
+}
+
+const INPUT_FILE = `./discord/fetchOutput/${category}.json`; // Path ke file JSON dari Discord
+const OUTPUT_DIR = `./discord/formatOutput/${category}`; // Folder untuk menyimpan hasil
 // --------------------
 
 // ====================================================================
