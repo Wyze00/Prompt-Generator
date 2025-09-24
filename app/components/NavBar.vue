@@ -7,7 +7,7 @@
             <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
               <span class="text-white font-bold text-sm">CP</span>
             </div>
-            <span class="text-xl font-bold text-gray-100">Command Prompt Maker</span>
+            <span class="text-xl font-bold text-gray-100">Command Prompt Generator</span>
           </NuxtLink>
         </div>
         

@@ -6,7 +6,7 @@
           <div class="text-center">
             <h1 class="text-4xl sm:text-6xl font-bold text-gray-100 mb-6">
               Command Prompt
-              <span class="text-green-500">Maker</span>
+              <span class="text-green-500">Generator</span>
             </h1>
             <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Generate and customize command-line tools with interactive options. Perfect for penetration testers, developers, and system administrators.
@@ -27,7 +27,7 @@
       <section class="py-20 bg-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 class="text-3xl font-bold text-center text-gray-100 mb-12">
-            Why Use Command Prompt Maker?
+            Why Use Command Prompt Generator?
           </h2>
           
           <div class="grid md:grid-cols-3 gap-8">

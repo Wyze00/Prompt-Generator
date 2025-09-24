@@ -1,19 +1,19 @@
-# Command Prompt Maker
+# Command Prompt Generator
 
 <p align="center">
-  <img src="./img/showcase1.png" alt="Tampilan Command Prompt Maker" width="700"/>
+  <img src="./app/assets/image/showcase1.png" alt="Tampilan Command Prompt Generator" width="700"/>
 </p>
 
 <p align="center">
-  <img src="./img/showcase2.png" alt="Tampilan Command Prompt Maker" width="700"/>
+  <img src="./app/assets/image/showcase2.png" alt="Tampilan Command Prompt Generator" width="700"/>
 </p>
 
 <p align="center">
-  <img src="./img/showcase3.png" alt="Tampilan Command Prompt Maker" width="700"/>
+  <img src="./app/assets/image/showcase3.png" alt="Tampilan Command Prompt Generator" width="700"/>
 </p>
 
 <p align="center">
-  <img src="./img/showcase4.png" alt="Tampilan Command Prompt Maker" width="700"/>
+  <img src="./app/assets/image/showcase4.png" alt="Tampilan Command Prompt Generator" width="700"/>
 </p>
 
 Sebuah aplikasi web berbasis Nuxt.js untuk membuat dan mengelola *command prompt* untuk berbagai *cybersecurity tools*. Proyek ini memiliki alur kerja unik yang memungkinkan pembuatan halaman tool secara otomatis dari catatan yang disimpan di Discord.
