@@ -1,80 +1,29 @@
 import type { ITool } from '../../types/interfaces';
 
-export const manTool: ITool = {
-  "name": "man",
-  "description": "Untuk melihat manual page dari suatu tools",
+export const templateTool: ITool = {
+  "name": "template",
+  "description": "Template aja",
   "documentation": {
-    "overview": "Untuk melihat manual page dari suatu tools",
-    "installation": "sudo apt install man-db",
+    "overview": "Template aja",
+    "installation": "sudo apt install",
     "usage": [
       {
         "mode": "DEFAULT (Penggunaan Default)",
-        "text": "man",
-        "options": "- {<tools> (Nama tools) [-f (Search title) | -k (Search description) {-o (output)}]}"
+        "text": "template",
+        "options": "- {<ri> (required input)}\n- {-rf (required flag)}\n- {-rfi <rfi> (required flag input)}\n- [<oi> (optional input)]\n- [-of (optional flag)]\n- [-ofi <ofi> (optional flag input)]\n- {-rof (ro flag) | -roi <roi> (ro input)}\n- [-oof (oo flag) | -ooi <ooi> (oo input)]\n- {<ri> (required input) {-rf (required flag)}}\n- {{-rf (required flag)} <ri> (required input)}\n- [-ofi <ofi> (of input) {-rf (required flag)}]\n- [{-rf (required flag)} -ofi <ofi> (of input)]\n- [-of <of> (optional flag) | <oi> (optional input) {-rfi <rfi> (rf input)}]\n- [-of <of> (optional flag) | {-rfi <rfi> (rf input)} <oi> (optional input)]\n- {aja@<ipt> (required input)}\n- {<ipt1>%%<ipt2> (double required input)}\n- [-oi <ipt>@aja (optional input)]\n- [<ipt1>%%<ipt2> (double optional input) {-rf(rf) {-rf (rf)}} | -ooi <ooi> (oo input) [<oi> (optional input)]]\n- [{{-rf (rf)} -rfi <rfi> (rfi)} <ipt1>%%<ipt2> (double optional input) | [<oi> (optional input)] -ooi <ooi> (oo input)]\n- [-ofi <1>:<2>:<3> (tripple oi) | <oi> (optional input) {-rf (required flag) | <ri> (required input) | -rfi <rfi> (required flag input) [-of (optional flag)]}]\n- [{-ri <ri> (required input) | [-of (opfl)] {-w (wajib)} <ri> (ri) {-wl (wl) [-o1 (o1) | -o2 (o2)]}} -ofi <1>:<2>:<3> (tripple oi) | {-rf (required flag) | <ri> (required input) | -rfi <rfi> (required flag input) [-of (optional flag)]} <oi> (optional input)]"
       },
       {
-        "mode": "INTOOLS (Setelah masuk kedalam manual pagenya)",
-        "text": "",
-        "options": "- {<ri> (required input)}\n- {-rf (required flag)}\n- {-rfi <rfi> (required flag input)}\n- [<oi> (optional input)]\n- [-of (optional flag)]\n- [-ofi <ofi> (optional flag input)]\n- {-rof (ro flag) | -roi <roi> (ro input)}\n- [-oof (oo flag) | -ooi <ooi> (oo input)]\n- {<ri> (required input) {-rf (required flag)}}\n- {{-rf (required flag)} <ri> (required input)}\n- [-ofi <ofi> (of input) {-rf (required flag)}]\n- [{-rf (required flag)} -ofi <ofi> (of input)]\n- [-of <of> (optional flag) | <oi> (optional input) {-rfi <rfi> (rf input)}]\n- [-of <of> (optional flag) | {-rfi <rfi> (rf input)} <oi> (optional input)]\n- {aja@<ipt> (required input)}\n- {<ipt1>%%<ipt2> (double required input)}\n- [-oi <ipt>@aja (optional input)]\n- [<ipt1>%%<ipt2> (double optional input) {-rf(rf) {-rf (rf)}} | -ooi <ooi> (oo input) [<oi> (optional input)]]\n- [{{-rf (rf)} -rfi <rfi> (rfi)} <ipt1>%%<ipt2> (double optional input) | [<oi> (optional input)] -ooi <ooi> (oo input)]\n- [-ofi <1>:<2>:<3> (tripple oi) | <oi> (optional input) {-rf (required flag) | <ri> (required input) | -rfi <rfi> (required flag input) [-of (optional flag)]}]\n- [-ofi <1>:<2>:<3> (tripple oi) | {-rf (required flag) | <ri> (required input) | -rfi <rfi> (required flag input) [-of (optional flag)]} <oi> (optional input)]"
+        "mode": "DEFAULT2 (Default 2)",
+        "text": "def2",
+        "options": "- [-o <opt> (opt)]"
       }
     ]
   },
   "command": [
     {
-      "name": "man",
+      "name": "template",
       "mode": "DEFAULT",
       "description": "Penggunaan Default",
-      "groups": [
-        {
-          "type": "required",
-          "description": "",
-          "flags": [
-            {
-              "flag": "<tools>",
-              "description": "Nama tools",
-              "input": true,
-              "options": [
-                {
-                  "type": "optional_one_of",
-                  "description": "",
-                  "flags": [
-                    {
-                      "flag": "-f",
-                      "description": "Search title",
-                      "input": false,
-                      "options": []
-                    },
-                    {
-                      "flag": "-k",
-                      "description": "Search description",
-                      "input": false,
-                      "options": [
-                        {
-                          "type": "required",
-                          "description": "",
-                          "flags": [
-                            {
-                              "flag": "-o",
-                              "description": "output",
-                              "input": false,
-                              "options": []
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "",
-      "mode": "INTOOLS",
-      "description": "Setelah masuk kedalam manual pagenya",
       "groups": [
         {
           "type": "required",
@@ -560,7 +509,82 @@ export const manTool: ITool = {
               "flag": "-ofi <1>:<2>:<3>",
               "description": "tripple oi",
               "input": true,
-              "options": []
+              "options": [
+                {
+                  "type": "required_one_of",
+                  "description": "",
+                  "flags": [
+                    {
+                      "flag": "-ri <ri>",
+                      "description": "required input",
+                      "input": true,
+                      "options": []
+                    },
+                    {
+                      "flag": "<ri>",
+                      "description": "ri",
+                      "input": true,
+                      "options": [
+                        {
+                          "type": "optional",
+                          "description": "",
+                          "flags": [
+                            {
+                              "flag": "-of",
+                              "description": "opfl",
+                              "input": false,
+                              "options": []
+                            }
+                          ]
+                        },
+                        {
+                          "type": "required",
+                          "description": "",
+                          "flags": [
+                            {
+                              "flag": "-w",
+                              "description": "wajib",
+                              "input": false,
+                              "options": []
+                            }
+                          ]
+                        },
+                        {
+                          "type": "required",
+                          "description": "",
+                          "flags": [
+                            {
+                              "flag": "-wl",
+                              "description": "wl",
+                              "input": false,
+                              "options": [
+                                {
+                                  "type": "optional_one_of",
+                                  "description": "",
+                                  "flags": [
+                                    {
+                                      "flag": "-o1",
+                                      "description": "o1",
+                                      "input": false,
+                                      "options": []
+                                    },
+                                    {
+                                      "flag": "-o2",
+                                      "description": "o2",
+                                      "input": false,
+                                      "options": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             },
             {
               "flag": "<oi>",
@@ -609,7 +633,30 @@ export const manTool: ITool = {
           ]
         }
       ]
+    },
+    {
+      "name": "def2",
+      "mode": "DEFAULT",
+      "description": "Default 2",
+      "groups": [
+        {
+          "type": "optional",
+          "description": "",
+          "flags": [
+            {
+              "flag": "-o <opt>",
+              "description": "opt",
+              "input": true,
+              "options": []
+            }
+          ]
+        }
+      ]
     }
   ],
-  "relatedTools": []
+  "relatedTools": [
+    "dig",
+    "man",
+    "apropos"
+  ]
 };

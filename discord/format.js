@@ -182,11 +182,23 @@ function parseUsage(usageText) {
 function parseContent(content) {
   const overviewMatch = content.match(/## OVERVIEW\s*([\s\S]*?)(?=\s*## INSTLATION)/);
   const installationMatch = content.match(/## INSTLATION\s*```bash\s*([\s\S]*?)\s*```/);
-  const usageMatch = content.match(/## USAGE\s*([\s\S]*)/);
+  const usageMatch = content.match(/## USAGE\s*([\s\S]*?)(?=\n## |\s*$)/);
+  const linksMatch = content.match(/## LINKS\s*([\s\S]*)/);
+  let relatedTools = [];
+
+  if (linksMatch && linksMatch[1]) {
+      relatedTools = linksMatch[1]
+          .split('\n') 
+          .map(line => line.trim()) 
+          .filter(line => line.startsWith('- ')) 
+          .map(line => line.substring(2).trim());
+  }
+
   return {
     overview: overviewMatch ? overviewMatch[1].trim() : '',
     installation: installationMatch ? installationMatch[1].trim() : '',
     usage: usageMatch ? parseUsage(usageMatch[1]) : [],
+    relatedTools: relatedTools
   };
 }
 
@@ -233,6 +245,7 @@ function main() {
         usage: docData.usage,
       },
       command: commands,
+      relatedTools: docData.relatedTools
     };
     const fileContent = `
 import type { ITool } from '../../types/interfaces';

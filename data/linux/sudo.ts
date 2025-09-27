@@ -21,11 +21,11 @@ export const sudoTool: ITool = {
       "description": "",
       "groups": [
         {
-          "type": "optional",
+          "type": "required",
           "description": "",
           "flags": [
             {
-              "flag": "-u <user>",
+              "flag": "<command>",
               "description": "",
               "input": true,
               "options": []
@@ -33,18 +33,57 @@ export const sudoTool: ITool = {
           ]
         },
         {
-          "type": "optional",
+          "type": "required",
           "description": "",
           "flags": [
             {
-              "flag": "-l",
+              "flag": "-> jalankan commad sebagai <user>",
+              "description": "",
+              "input": true,
+              "options": [
+                {
+                  "type": "optional",
+                  "description": "",
+                  "flags": [
+                    {
+                      "flag": "-u <user>",
+                      "description": "",
+                      "input": true,
+                      "options": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "required",
+          "description": "",
+          "flags": [
+            {
+              "flag": "-> list tertentu",
               "description": "",
               "input": false,
-              "options": []
+              "options": [
+                {
+                  "type": "optional",
+                  "description": "",
+                  "flags": [
+                    {
+                      "flag": "-l",
+                      "description": "",
+                      "input": false,
+                      "options": []
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  "relatedTools": []
 };
