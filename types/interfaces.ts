@@ -61,6 +61,7 @@ export interface ITool {
         installation: string;
         usage: IUsageCommand[];
     };
+    relatedTools?: string[];
 }
 
 export interface IUsageCommand {

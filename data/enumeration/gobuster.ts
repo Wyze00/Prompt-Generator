@@ -1,6 +1,7 @@
 import type { ITool } from '../../types/interfaces';
 
 export const gobusterTool: ITool = {
+  relatedTools: ['dig', 'braa'],
   "name": "gobuster",
   "description": "tools untuk brute force directory, file. vhost, dns dan lainnya",
   "documentation": {

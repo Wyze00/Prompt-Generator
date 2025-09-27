@@ -111,6 +111,25 @@
           </button>
         </div>
       </div>
+
+      <section v-if="tool.relatedTools && tool.relatedTools.length > 0" class="card">
+        <h2 class="section-title">
+          <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.536a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+          </svg>
+          Related Tools
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <NuxtLink 
+            v-for="slug in tool.relatedTools" 
+            :key="slug"
+            :to="toolMap[slug]" 
+            class="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg text-center transition-colors"
+          >
+            <span class="font-medium text-gray-200">{{ slug }}</span>
+          </NuxtLink>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -120,6 +139,7 @@ import { ref, reactive, watch, toRefs, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import type { ITool, IGroup, IFlag } from '../../types/interfaces'; // Pastikan IFlag diimpor
 import OptionGroup from '~/components/OptionGroup.vue';
+import { toolMap } from '../../data/toolsMap';
 
 const props = defineProps<{
   tool: ITool;
