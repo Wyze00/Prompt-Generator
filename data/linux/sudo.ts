@@ -2,43 +2,31 @@ import type { ITool } from '../../types/interfaces';
 
 export const sudoTool: ITool = {
   "name": "sudo",
-  "description": "jalankan program sebagai user lain",
+  "description": "Jalankan program sebagai user lain",
   "documentation": {
-    "overview": "jalankan program sebagai user lain",
+    "overview": "Jalankan program sebagai user lain",
     "installation": "sudo apt install sudo",
     "usage": [
       {
-        "mode": "- **sudo**",
-        "text": "",
-        "options": "- <command>\n- [-u <user>] -> jalankan commad sebagai <user>\n- [-l] -> list tertentu"
+        "mode": "DEFAULT ()",
+        "text": "sudo",
+        "options": "- [[-u <user> (Jalankan sebagai <user>)] <tools> (Nama tools yang ingin dijalankan)]\n- [-l (List privilege dalam akun ini)]"
       }
     ]
   },
   "command": [
     {
-      "name": "",
-      "mode": "",
+      "name": "sudo",
+      "mode": "DEFAULT",
       "description": "",
       "groups": [
         {
-          "type": "required",
+          "type": "optional",
           "description": "",
           "flags": [
             {
-              "flag": "<command>",
-              "description": "",
-              "input": true,
-              "options": []
-            }
-          ]
-        },
-        {
-          "type": "required",
-          "description": "",
-          "flags": [
-            {
-              "flag": "-> jalankan commad sebagai <user>",
-              "description": "",
+              "flag": "<tools>",
+              "description": "Nama tools yang ingin dijalankan",
               "input": true,
               "options": [
                 {
@@ -47,7 +35,7 @@ export const sudoTool: ITool = {
                   "flags": [
                     {
                       "flag": "-u <user>",
-                      "description": "",
+                      "description": "Jalankan sebagai <user>",
                       "input": true,
                       "options": []
                     }
@@ -58,32 +46,21 @@ export const sudoTool: ITool = {
           ]
         },
         {
-          "type": "required",
+          "type": "optional",
           "description": "",
           "flags": [
             {
-              "flag": "-> list tertentu",
-              "description": "",
+              "flag": "-l",
+              "description": "List privilege dalam akun ini",
               "input": false,
-              "options": [
-                {
-                  "type": "optional",
-                  "description": "",
-                  "flags": [
-                    {
-                      "flag": "-l",
-                      "description": "",
-                      "input": false,
-                      "options": []
-                    }
-                  ]
-                }
-              ]
+              "options": []
             }
           ]
         }
       ]
     }
   ],
-  "relatedTools": []
+  "relatedTools": [
+    "su"
+  ]
 };
