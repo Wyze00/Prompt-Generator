@@ -11,17 +11,12 @@ if (!CHANNEL_NAME) {
 }
 
 const INPUT_FILE = `./discord/fetchOutput/${CHANNEL_NAME}.json`; // Path ke file JSON dari Discord
-const OUTPUT_DIR = `./discord/formatOutput/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
-// --------------------
+const OUTPUT_DIR = `./data/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
 
 // ====================================================================
 // FUNGSI-FUNGSI PARSER
 // ====================================================================
 
-/**
- * Helper untuk memisahkan string berdasarkan delimiter (e.g., '|') 
- * hanya pada level teratas (tidak di dalam kurung).
- */
 function splitTopLevel(str, delimiter) {
   const result = [];
   let braceCount = 0;
@@ -39,21 +34,20 @@ function splitTopLevel(str, delimiter) {
 }
 
 /**
- * Fungsi rekursif utama untuk mem-parsing satu baris menjadi IGroup.
+ * [BARU & DIPERBAIKI] Fungsi ini sekarang mem-parsing satu komponen menjadi satu IGroup.
+ * Ia bisa menangani komponen dengan atau tanpa kurung terluar.
  */
-function parseLineToGroup(line) {
-  let processedLine = line.trim();
-  if (processedLine.startsWith('-')) {
-    processedLine = processedLine.substring(1).trim();
-  }
+function parseComponentToGroup(component) {
+  let processed = component.trim();
 
-  const isOptional = processedLine.startsWith('[') && processedLine.endsWith(']');
-  const isRequired = processedLine.startsWith('{') && processedLine.endsWith('}');
+  const isOptional = processed.startsWith('[') && processed.endsWith(']');
+  const isRequired = processed.startsWith('{') && processed.endsWith('}');
   
-  const content = (isOptional || isRequired) ? processedLine.slice(1, -1) : processedLine;
+  // Ambil konten di dalam kurung jika ada, jika tidak, gunakan seluruh string
+  const content = (isOptional || isRequired) ? processed.slice(1, -1) : processed;
   const isOneOf = splitTopLevel(content, '|').length > 1;
 
-  let type = 'required';
+  let type = 'required'; // Default untuk komponen tanpa kurung seperti `<tools>`
   if (isOneOf && isRequired) type = 'required_one_of';
   else if (isOneOf && isOptional) type = 'optional_one_of';
   else if (isRequired) type = 'required';
@@ -68,7 +62,8 @@ function parseLineToGroup(line) {
     if (nestedMatch) {
       const nestedString = nestedMatch[0];
       currentPart = currentPart.replace(nestedString, '').trim();
-      nestedOptions.push(parseLineToGroup(`- ${nestedString}`));
+      // Panggilan Rekursif: ubah nested string menjadi IGroup
+      nestedOptions.push(parseComponentToGroup(nestedString));
     }
     let description = '';
     const descMatch = currentPart.match(/\((.*?)\)/);
@@ -77,10 +72,10 @@ function parseLineToGroup(line) {
       currentPart = currentPart.replace(/\s*\((.*?)\)/, '').trim();
     }
     const hasInput = currentPart.includes('<') && currentPart.includes('>');
-    return { flag: currentPart, description: description, input: hasInput, options: nestedOptions };
+    return { flag: currentPart, description, input: hasInput, options: nestedOptions };
   });
 
-  return { type: type, description: '', flags: flags };
+  return { type, description: '', flags };
 }
 
 /**
@@ -103,7 +98,7 @@ function parseUsage(usageText) {
     if (headerMatch) {
       mode = headerMatch[1].trim();
       description = headerMatch[2].trim();
-    }
+    } 
     
     const content = lines.join('\n').trim();
     const textMatch = content.match(/-\s*\*\*(.*?)\*\*/);
@@ -113,7 +108,7 @@ function parseUsage(usageText) {
     if (textMatch && textMatch.index !== undefined) {
       const textLineEndIndex = textMatch.index + textMatch[0].length;
       options = content.substring(textLineEndIndex).trim();
-    } else if (!text) {
+    } else if (!text && content) {
       options = content;
     }
     
@@ -162,13 +157,30 @@ function main() {
     const content = messages[0].content;
     const docData = parseContent(content);
     const commands = docData.usage.map(usageCmd => {
+      
         const lines = usageCmd.options.split('\n').filter(l => l.trim() !== '' && l.trim().startsWith('-'));
-        const groups = lines.map(line => parseLineToGroup(line));
+        const groups = lines.flatMap(line => {
+            let currentLine = line.trim().substring(1).trim();
+            
+            // Jika baris dibungkus kurung kurawal, proses isinya saja
+            if (currentLine.startsWith('{') && currentLine.endsWith('}')) {
+              currentLine = currentLine.slice(1, -1).trim();
+            }
+
+            // Regex untuk menemukan semua komponen level atas: [...], {...}, atau <...> (deskripsi)
+            const components = currentLine.match(/(\[.*?\]|\{.*?\}|<.*?>\s*\(.*?\))/g) || [];
+            console.log(components);
+            // Ubah setiap komponen yang ditemukan menjadi IGroup
+            return components.map(component => parseComponentToGroup(component));
+        });
+        
         const mode = usageCmd.mode;
         const realMode = mode.match(/[A-Za-z]*/)[0];
         const description = mode.match(/\(([A-Za-z0-9 ]*)\)/);
         return { name: usageCmd.text, mode: realMode, description: description ? description[1] : '', groups: groups};
+
     });
+
     const toolObject = {
       name: toolName,
       description: docData.overview,

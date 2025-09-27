@@ -11,11 +11,6 @@ export const manTool: ITool = {
         "mode": "DEFAULT (Penggunaan Default)",
         "text": "man",
         "options": "- {[-f (Search title) | -k (Search description)] <tools> (Nama tools)}"
-      },
-      {
-        "mode": "IN TOOLS (Setelah masuk kedalam manual pagenya)",
-        "text": "",
-        "options": "- [/ (Search)]\n\n## LINK\n\n- apropos\n- whatis"
       }
     ]
   },
@@ -30,53 +25,29 @@ export const manTool: ITool = {
           "description": "",
           "flags": [
             {
-              "flag": "[-f | -k (Search description)] <tools> (Nama tools)",
-              "description": "Search title",
+              "flag": "<tools>",
+              "description": "Nama tools",
               "input": true,
-              "options": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "",
-      "mode": "IN",
-      "description": "Setelah masuk kedalam manual pagenya",
-      "groups": [
-        {
-          "type": "optional",
-          "description": "",
-          "flags": [
-            {
-              "flag": "/",
-              "description": "Search",
-              "input": false,
-              "options": []
-            }
-          ]
-        },
-        {
-          "type": "required",
-          "description": "",
-          "flags": [
-            {
-              "flag": "apropos",
-              "description": "",
-              "input": false,
-              "options": []
-            }
-          ]
-        },
-        {
-          "type": "required",
-          "description": "",
-          "flags": [
-            {
-              "flag": "whatis",
-              "description": "",
-              "input": false,
-              "options": []
+              "options": [
+                        {
+                  "type": "optional_one_of",
+                  "description": "",
+                  "flags": [
+                    {
+                      "flag": "-f",
+                      "description": "Search title",
+                      "input": false,
+                      "options": []
+                    },
+                    {
+                      "flag": "-k",
+                      "description": "Search description",
+                      "input": false,
+                      "options": []
+                    }
+                  ]
+                },
+              ]
             }
           ]
         }
