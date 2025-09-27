@@ -14,9 +14,13 @@ const INPUT_FILE = `./discord/fetchOutput/${CHANNEL_NAME}.json`; // Path ke file
 const OUTPUT_DIR = `./data/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
 
 // ====================================================================
-// FUNGSI-FUNGSI PARSER
+// FUNGSI-FUNGSI PARSER (BARU & DIPERBAIKI)
 // ====================================================================
 
+/**
+ * Memisahkan string berdasarkan delimiter di level teratas, mengabaikan
+ * delimiter yang ada di dalam kurung {...} atau [...].
+ */
 function splitTopLevel(str, delimiter) {
   const result = [];
   let braceCount = 0;
@@ -34,53 +38,109 @@ function splitTopLevel(str, delimiter) {
 }
 
 /**
- * [BARU & DIPERBAIKI] Fungsi ini sekarang mem-parsing satu komponen menjadi satu IGroup.
- * Ia bisa menangani komponen dengan atau tanpa kurung terluar.
+ * Menemukan semua komponen bersarang level atas (e.g., {...} atau [...])
+ * dalam sebuah string.
  */
-function parseComponentToGroup(component) {
-  let processed = component.trim();
+function findTopLevelComponents(str) {
+    const components = [];
+    let level = 0;
+    let start = -1;
 
-  const isOptional = processed.startsWith('[') && processed.endsWith(']');
-  const isRequired = processed.startsWith('{') && processed.endsWith('}');
-  
-  // Ambil konten di dalam kurung jika ada, jika tidak, gunakan seluruh string
-  const content = (isOptional || isRequired) ? processed.slice(1, -1) : processed;
-  const isOneOf = splitTopLevel(content, '|').length > 1;
-
-  let type = 'required'; // Default untuk komponen tanpa kurung seperti `<tools>`
-  if (isOneOf && isRequired) type = 'required_one_of';
-  else if (isOneOf && isOptional) type = 'optional_one_of';
-  else if (isRequired) type = 'required';
-  else if (isOptional) type = 'optional';
-  
-  const flagParts = splitTopLevel(content, '|');
-
-  const flags = flagParts.map(part => {
-    let currentPart = part.trim();
-    let nestedOptions = [];
-    const nestedMatch = currentPart.match(/(\[.*?\]|\{.*?\})$/);
-    if (nestedMatch) {
-      const nestedString = nestedMatch[0];
-      currentPart = currentPart.replace(nestedString, '').trim();
-      // Panggilan Rekursif: ubah nested string menjadi IGroup
-      nestedOptions.push(parseComponentToGroup(nestedString));
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === '{' || str[i] === '[') {
+            if (level === 0) {
+                start = i;
+            }
+            level++;
+        } else if (str[i] === '}' || str[i] === ']') {
+            if (level > 0) {
+                level--;
+                if (level === 0 && start !== -1) {
+                    components.push(str.substring(start, i + 1));
+                    start = -1;
+                }
+            }
+        }
     }
-    let description = '';
-    const descMatch = currentPart.match(/\((.*?)\)/);
-    if (descMatch) {
-      description = descMatch[1];
-      currentPart = currentPart.replace(/\s*\((.*?)\)/, '').trim();
-    }
-    const hasInput = currentPart.includes('<') && currentPart.includes('>');
-    return { flag: currentPart, description, input: hasInput, options: nestedOptions };
-  });
-
-  return { type, description: '', flags };
+    return components;
 }
 
 /**
- * Fungsi parser untuk USAGE yang lebih toleran terhadap spasi.
+ * [Fungsi Parser Rekursif] Mengubah string komponen menjadi struktur IGroup.
+ * Fungsi ini menggantikan `_parseSingleComponentToGroup`.
  */
+function parseComponentToGroup(componentStr) {
+    let processed = componentStr.trim();
+
+    const isOptional = processed.startsWith('[') && processed.endsWith(']');
+    const isRequired = processed.startsWith('{') && processed.endsWith('}');
+    const content = (isOptional || isRequired) ? processed.slice(1, -1).trim() : processed;
+
+    const flagParts = splitTopLevel(content, '|');
+    const isOneOf = flagParts.length > 1;
+
+    let type;
+    if (isOneOf && isRequired) type = 'required_one_of';
+    else if (isOneOf && isOptional) type = 'optional_one_of';
+    else if (isRequired) type = 'required';
+    else if (isOptional) type = 'optional';
+    else type = 'required'; // Default untuk input yang tidak dibungkus kurung
+
+    const flags = flagParts.map(partStr => {
+        let currentPart = partStr.trim();
+        const nestedComponentStrings = findTopLevelComponents(currentPart);
+
+        let mainPart = currentPart;
+        // Hapus semua komponen turunan dari string untuk mengisolasi bagian utama
+        nestedComponentStrings.forEach(comp => {
+            mainPart = mainPart.replace(comp, '').trim();
+        });
+
+        let actualNestedComponents = nestedComponentStrings;
+        
+        // Menangani kasus di mana komponen pertama sebenarnya adalah bagian utama
+        // e.g., `{{-rf} -rfi <rfi>}`
+        if (mainPart === '' && nestedComponentStrings.length > 0) {
+            mainPart = nestedComponentStrings[0];
+            actualNestedComponents = nestedComponentStrings.slice(1);
+        }
+
+        const nestedOptions = actualNestedComponents.map(comp => parseComponentToGroup(comp));
+        
+        let description = '';
+        // Regex untuk mencocokkan deskripsi dalam kurung di akhir string
+        const descMatch = mainPart.match(/\s*\(([^)]*)\)$/);
+        if (descMatch) {
+            description = descMatch[1].trim();
+            mainPart = mainPart.replace(descMatch[0], '').trim();
+        }
+        
+        const hasInput = /<.*?>/.test(mainPart);
+
+        return {
+            flag: mainPart,
+            description,
+            input: hasInput,
+            options: nestedOptions,
+        };
+    });
+
+    return { type, description: '', flags };
+}
+
+/**
+ * [Fungsi Pengganti] Fungsi utama untuk mem-parsing satu baris dari file markdown.
+ * Fungsi ini menggantikan `parseLineToGroups`.
+ */
+function parseLine(line) {
+    let content = line.trim();
+    if (content.startsWith('-')) {
+        content = content.substring(1).trim();
+    }
+    // Memastikan semua komponen diproses sebagai grup dengan memanggil parser rekursif
+    return parseComponentToGroup(content);
+}
+
 function parseUsage(usageText) {
   if (!usageText || !usageText.trim()) return [];
   
@@ -93,12 +153,11 @@ function parseUsage(usageText) {
     let mode = headerLine;
     let description = '';
     
-    // Gunakan regex untuk mengekstrak MODE dan DESKRIPSI dari header
     const headerMatch = headerLine.match(/^(.+?)\s*\((.*?)\)$/);
     if (headerMatch) {
       mode = headerMatch[1].trim();
       description = headerMatch[2].trim();
-    } 
+    }
     
     const content = lines.join('\n').trim();
     const textMatch = content.match(/-\s*\*\*(.*?)\*\*/);
@@ -108,21 +167,18 @@ function parseUsage(usageText) {
     if (textMatch && textMatch.index !== undefined) {
       const textLineEndIndex = textMatch.index + textMatch[0].length;
       options = content.substring(textLineEndIndex).trim();
-    } else if (!text && content) {
+    } else if (!text) {
       options = content;
     }
     
     return {
-      mode: headerLine,                // Untuk `command.mode`
-      text: text,                // Untuk `command.name` & `documentation.usage.text`
+      mode: headerLine,               
+      text: text,                
       options: options.replaceAll('  ', ''),
     };
   });
 }
 
-/**
- * Mem-parsing konten pesan Discord utama menjadi beberapa bagian.
- */
 function parseContent(content) {
   const overviewMatch = content.match(/## OVERVIEW\s*([\s\S]*?)(?=\s*## INSTLATION)/);
   const installationMatch = content.match(/## INSTLATION\s*```bash\s*([\s\S]*?)\s*```/);
@@ -135,7 +191,7 @@ function parseContent(content) {
 }
 
 // ====================================================================
-// FUNGSI UTAMA (MAIN)
+// FUNGSI UTAMA (MAIN) - Dengan sedikit modifikasi
 // ====================================================================
 function main() {
   if (!fs.existsSync(OUTPUT_DIR)) {
@@ -157,30 +213,17 @@ function main() {
     const content = messages[0].content;
     const docData = parseContent(content);
     const commands = docData.usage.map(usageCmd => {
-      
         const lines = usageCmd.options.split('\n').filter(l => l.trim() !== '' && l.trim().startsWith('-'));
-        const groups = lines.flatMap(line => {
-            let currentLine = line.trim().substring(1).trim();
-            
-            // Jika baris dibungkus kurung kurawal, proses isinya saja
-            if (currentLine.startsWith('{') && currentLine.endsWith('}')) {
-              currentLine = currentLine.slice(1, -1).trim();
-            }
+      
+        // --- MODIFIKASI INTI ---
+        // Menggunakan fungsi `parseLine` yang baru
+        const groups = lines.map(line => parseLine(line));
 
-            // Regex untuk menemukan semua komponen level atas: [...], {...}, atau <...> (deskripsi)
-            const components = currentLine.match(/(\[.*?\]|\{.*?\}|<.*?>\s*\(.*?\))/g) || [];
-            console.log(components);
-            // Ubah setiap komponen yang ditemukan menjadi IGroup
-            return components.map(component => parseComponentToGroup(component));
-        });
-        
         const mode = usageCmd.mode;
         const realMode = mode.match(/[A-Za-z]*/)[0];
         const description = mode.match(/\(([A-Za-z0-9 ]*)\)/);
         return { name: usageCmd.text, mode: realMode, description: description ? description[1] : '', groups: groups};
-
     });
-
     const toolObject = {
       name: toolName,
       description: docData.overview,
