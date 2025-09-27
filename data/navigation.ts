@@ -31,4 +31,8 @@ export const navStructure: NavLink[] = [
       { name: 'Gobuster', path: '/enumeration/gobuster' },
     ]
   },
+  {
+    name: 'Linux',
+    path: '/linux',
+  },
 ];

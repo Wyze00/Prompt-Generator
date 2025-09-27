@@ -11,7 +11,9 @@
     "fetch:recon": "node discord/fetch.js recon",
     "format:recon": "node discord/format.js recon",
     "fetch:enumeration": "node discord/fetch.js enumeration",
-    "format:enumeration": "node discord/format.js enumeration"
+    "format:enumeration": "node discord/format.js enumeration",
+    "fetch:linux": "node discord/fetch.js linux",
+    "format:linux": "node discord/format.js linux"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",
