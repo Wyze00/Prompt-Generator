@@ -56,7 +56,7 @@ Berikut adalah cara untuk menjalankan proyek ini di komputer lokal Anda.
 
 1.  **Clone repository ini:**
     ```bash
-    git clone https://URL_REPOSITORY_ANDA.git
+    git clone https://github.com/Wyze00/Prompt-Generator
     cd nama-folder-proyek
     ```
 
@@ -65,9 +65,14 @@ Berikut adalah cara untuk menjalankan proyek ini di komputer lokal Anda.
     npm install
     ```
 
+3.  **Jalankan Project:**
+    ```bash
+    npm run dev
+    ```
+
 ---
 
-## ⚙️ Konfigurasi (Integrasi Discord)
+## ⚙️ Konfigurasi Integrasi Discord (Opsional)
 
 Ini adalah langkah paling penting untuk menghubungkan aplikasi dengan catatan Discord Anda.
 
