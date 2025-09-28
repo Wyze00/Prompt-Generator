@@ -130,6 +130,33 @@ Untuk menambahkan atau memperbarui tool dari catatan Discord Anda:
 - Di dalam channel yang sesuai (misal: `#recon`), buat thread baru untuk setiap tool. Nama thread akan menjadi nama tool (misal: `nmap`).
 
 - Di pesan pertama, tulis dokumentasi menggunakan format yang telah ditentukan (`## OVERVIEW`, `## INSTLATION`, `## USAGE`).
+- Template :
+```markdown
+  ## OVERVIEW (<subcategory>)
+
+  <description>
+
+  ## INSTLATION
+
+  `` `bash
+  <installation steps>
+  `` `
+
+  ## USAGE
+
+  ### <command> (<description>)
+
+  - **<tools>**
+    - {<required> (<description>)}
+    - [<optional> (<description>)]
+    - {<req1> (<description>) | <req2> (<description>)}
+    - [<opt1> (<description>) | <opt> (<description>)]
+
+  ## LINKS
+
+  - <tool1>
+  - <tool2>
+```
 
 ### b. Ambil Pesan dari Discord (Fetch)
 
