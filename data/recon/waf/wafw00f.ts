@@ -1,4 +1,4 @@
-import type { ITool } from '../../types/interfaces';
+import type { ITool } from '~~/../types/interfaces';
 
 export const wafw00fTool: ITool = {
   "name": "wafw00f",
@@ -34,5 +34,6 @@ export const wafw00fTool: ITool = {
         }
       ]
     }
-  ]
+  ],
+  "relatedTools": []
 };

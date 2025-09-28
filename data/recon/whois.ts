@@ -1,4 +1,4 @@
-import type { ITool } from '../../types/interfaces';
+import type { ITool } from '~~/types/interfaces';
 
 export const whoisTool: ITool = {
   "name": "whois",
@@ -34,5 +34,6 @@ export const whoisTool: ITool = {
         }
       ]
     }
-  ]
+  ],
+  "relatedTools": []
 };

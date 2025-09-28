@@ -75,7 +75,7 @@ client.once('ready', async () => {
             console.log(`\n--- Mengambil pesan dari thread: "${thread.name}" ---`);
             const messages = await fetchAllMessages(thread);
 
-            if (messages.length === 0 || !messages[0].content.startsWith('## OVERVIEW\n\n')) {
+            if (messages.length === 0 || !messages[0].content.startsWith('## OVERVIEW')) {
                 console.log(`--- Thread "${thread.name}" DILEWATI karena pesan pertama tidak valid atau kosong. ---`);
                 continue; // Lanjut ke thread berikutnya
             }

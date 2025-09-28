@@ -17,6 +17,12 @@ const OUTPUT_DIR = `./data/${CHANNEL_NAME}`; // Folder untuk menyimpan hasil
 // FUNGSI-FUNGSI PARSER (BARU & DIPERBAIKI)
 // ====================================================================
 
+
+function toCamelCase(str1, str2) {
+  const capitalizedStr2 = str2.charAt(0).toUpperCase() + str2.slice(1);
+  return `${str1}${capitalizedStr2}`;
+}
+
 /**
  * Memisahkan string berdasarkan delimiter di level teratas, mengabaikan
  * delimiter yang ada di dalam kurung {...} atau [...].
@@ -180,7 +186,7 @@ function parseUsage(usageText) {
 }
 
 function parseContent(content) {
-  const overviewMatch = content.match(/## OVERVIEW\s*([\s\S]*?)(?=\s*## INSTLATION)/);
+  const overviewMatch = content.match(/## OVERVIEW(?:\s*\((.*?)\))?\s*([\s\S]*?)(?=\s*## INSTLATION)/);
   const installationMatch = content.match(/## INSTLATION\s*```bash\s*([\s\S]*?)\s*```/);
   const usageMatch = content.match(/## USAGE\s*([\s\S]*?)(?=\n## |\s*$)/);
   const linksMatch = content.match(/## LINKS\s*([\s\S]*)/);
@@ -195,7 +201,8 @@ function parseContent(content) {
   }
 
   return {
-    overview: overviewMatch ? overviewMatch[1].trim() : '',
+    subcategory: overviewMatch && overviewMatch[1] ? overviewMatch[1].trim() : null,
+    overview: overviewMatch && overviewMatch[2] ? overviewMatch[2].trim() : '',
     installation: installationMatch ? installationMatch[1].trim() : '',
     usage: usageMatch ? parseUsage(usageMatch[1]) : [],
     relatedTools: relatedTools
@@ -206,10 +213,17 @@ function parseContent(content) {
 // FUNGSI UTAMA (MAIN) - Dengan sedikit modifikasi
 // ====================================================================
 function main() {
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    console.log(`Folder output dibuat: ${OUTPUT_DIR}`);
+  
+  // Hapus folder output yang sudah ada untuk memastikan kebersihan data
+  if (fs.existsSync(OUTPUT_DIR)) {
+    console.log(`Menghapus direktori lama: ${OUTPUT_DIR}`);
+    fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
   }
+
+  // Buat kembali folder output yang kosong
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  console.log(`Folder output dibuat: ${OUTPUT_DIR}`);
+
   let inputData;
   try {
     inputData = JSON.parse(fs.readFileSync(INPUT_FILE, 'utf-8'));
@@ -218,24 +232,28 @@ function main() {
     console.error(`Gagal membaca atau mem-parsing file input: ${INPUT_FILE}`, error);
     return;
   }
-  const allGeneratedTools = [];
+
+  const organizedTools = {
+    root: [],
+    subcategories: {}
+  };
+
   for (const toolName in inputData) {
     const messages = inputData[toolName];
     if (!messages || messages.length === 0) continue;
+    
     const content = messages[0].content;
     const docData = parseContent(content);
+
     const commands = docData.usage.map(usageCmd => {
         const lines = usageCmd.options.split('\n').filter(l => l.trim() !== '' && l.trim().startsWith('-'));
-      
-        // --- MODIFIKASI INTI ---
-        // Menggunakan fungsi `parseLine` yang baru
         const groups = lines.map(line => parseLine(line));
-
         const mode = usageCmd.mode;
         const realMode = mode.match(/[A-Za-z]*/)[0];
         const description = mode.match(/\(([A-Za-z0-9 ]*)\)/);
         return { name: usageCmd.text, mode: realMode, description: description ? description[1] : '', groups: groups};
     });
+
     const toolObject = {
       name: toolName,
       description: docData.overview,
@@ -247,30 +265,88 @@ function main() {
       command: commands,
       relatedTools: docData.relatedTools
     };
+
+    let outputPath;
+    let importPath = '~~/types/interfaces';
+
+    if (docData.subcategory) {
+      const subcategoryDir = path.join(OUTPUT_DIR, docData.subcategory);
+      if (!fs.existsSync(subcategoryDir)) {
+        fs.mkdirSync(subcategoryDir, { recursive: true });
+      }
+      outputPath = path.join(subcategoryDir, `${toolName}.ts`);
+      importPath = '~~/../types/interfaces';
+
+      if (!organizedTools.subcategories[docData.subcategory]) {
+        organizedTools.subcategories[docData.subcategory] = [];
+      }
+      organizedTools.subcategories[docData.subcategory].push(toolName);
+    } else {
+      outputPath = path.join(OUTPUT_DIR, `${toolName}.ts`);
+      organizedTools.root.push(toolName);
+    }
+
     const fileContent = `
-import type { ITool } from '~~/types/interfaces';
+import type { ITool } from '${importPath}';
 
 export const ${toolName}Tool: ITool = ${JSON.stringify(toolObject, null, 2)};
     `;
-    const outputPath = path.join(OUTPUT_DIR, `${toolName}.ts`);
+    
     fs.writeFileSync(outputPath, fileContent.trim());
     console.log(`-> Berhasil membuat file: ${outputPath}`);
-    allGeneratedTools.push(toolName);
   }
-  if (allGeneratedTools.length > 0) {
+
+  // Generate index files
+  // 1. Subcategory index files
+  for (const subcategoryName in organizedTools.subcategories) {
+    const tools = organizedTools.subcategories[subcategoryName];
+    const exportName = toCamelCase(CHANNEL_NAME, subcategoryName);
+    
     let indexContent = '';
-    allGeneratedTools.forEach(toolName => {
+    tools.forEach(toolName => {
         indexContent += `import { ${toolName}Tool } from './${toolName}';\n`;
     });
-    indexContent += `\nexport const ${CHANNEL_NAME} = {\n`;
-    allGeneratedTools.forEach(toolName => {
-        indexContent += `  ${toolName}: ${toolName}Tool,\n`;
+    indexContent += `\nimport type { Tools } from '~~/types/tools'\n`;
+    indexContent += `\nexport const ${exportName}: Tools = {\n`;
+    tools.forEach(toolName => {
+        indexContent += `    ${toolName}: ${toolName}Tool,\n`;
     });
     indexContent += '};';
-    const indexOutputPath = path.join(OUTPUT_DIR, 'index.ts');
+
+    const indexOutputPath = path.join(OUTPUT_DIR, subcategoryName, 'index.ts');
     fs.writeFileSync(indexOutputPath, indexContent);
-    console.log(`-> Berhasil membuat file index: ${indexOutputPath}`);
+    console.log(`-> Berhasil membuat file index subkategori: ${indexOutputPath}`);
   }
+
+  // 2. Main category index file
+  let mainIndexContent = '';
+  organizedTools.root.forEach(toolName => {
+    mainIndexContent += `import { ${toolName}Tool } from './${toolName}';\n`;
+  });
+
+  for (const subcategoryName in organizedTools.subcategories) {
+    const exportName = toCamelCase(CHANNEL_NAME, subcategoryName);
+    mainIndexContent += `import { ${exportName} } from './${subcategoryName}/index';\n`;
+  }
+  
+  mainIndexContent += `\nimport type { Tools } from '~~/types/tools';\n`;
+  mainIndexContent += `\nexport const ${CHANNEL_NAME}: Tools = {\n`;
+
+  organizedTools.root.forEach(toolName => {
+    mainIndexContent += `  ${toolName}: ${toolName}Tool,\n`;
+  });
+
+  for (const subcategoryName in organizedTools.subcategories) {
+    const exportName = toCamelCase(CHANNEL_NAME, subcategoryName);
+    mainIndexContent += `  ${subcategoryName}: ${exportName},\n`;
+  }
+
+  mainIndexContent += '};';
+  
+  const mainIndexOutputPath = path.join(OUTPUT_DIR, 'index.ts');
+  fs.writeFileSync(mainIndexOutputPath, mainIndexContent);
+  console.log(`-> Berhasil membuat file index utama: ${mainIndexOutputPath}`);
+
   console.log('\nProses selesai!');
 }
 

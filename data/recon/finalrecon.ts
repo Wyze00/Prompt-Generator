@@ -1,4 +1,4 @@
-import type { ITool } from '../../types/interfaces';
+import type { ITool } from '~~/types/interfaces';
 
 export const finalreconTool: ITool = {
   "name": "finalrecon",
@@ -34,5 +34,6 @@ export const finalreconTool: ITool = {
         }
       ]
     }
-  ]
+  ],
+  "relatedTools": []
 };

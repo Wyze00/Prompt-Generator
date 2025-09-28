@@ -1,4 +1,4 @@
-import type { ITool } from '../../types/interfaces';
+import type { ITool } from '~~/types/interfaces';
 
 export const digTool: ITool = {
   "name": "dig",
@@ -64,5 +64,6 @@ export const digTool: ITool = {
         }
       ]
     }
-  ]
+  ],
+  "relatedTools": []
 };

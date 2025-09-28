@@ -1,4 +1,4 @@
-import type { ITool } from '../../types/interfaces';
+import type { ITool } from '~~/types/interfaces';
 
 export const reconspiderTool: ITool = {
   "name": "reconspider",
@@ -34,5 +34,6 @@ export const reconspiderTool: ITool = {
         }
       ]
     }
-  ]
+  ],
+  "relatedTools": []
 };
