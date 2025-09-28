@@ -10,9 +10,9 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { enumeration } from '../../../data/enumeration';
+import { enumeration } from '~~/data/enumeration';
 import ToolPageLayout from '~/components/ToolPageLayout.vue';
-import type { ITool } from '../../../types/interfaces';
+import type { ITool } from '~~/types/interfaces';
 
 const route = useRoute();
 const slugParts = route.params.slug as string[];

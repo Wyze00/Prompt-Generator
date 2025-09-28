@@ -248,7 +248,7 @@ function main() {
       relatedTools: docData.relatedTools
     };
     const fileContent = `
-import type { ITool } from '../../types/interfaces';
+import type { ITool } from '~~/types/interfaces';
 
 export const ${toolName}Tool: ITool = ${JSON.stringify(toolObject, null, 2)};
     `;

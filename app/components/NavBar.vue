@@ -38,6 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import { navStructure } from '../../data/navigation';
+import { navStructure } from '~~/data/navigation';
 import NavDropdownItem from '~/components/NavDropdownItem.vue';
 </script>

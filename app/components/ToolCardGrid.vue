@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ITool } from '../../types/interfaces';
+import type { ITool } from '~~/types/interfaces';
 
 defineProps<{
   data: Record<string, any>;

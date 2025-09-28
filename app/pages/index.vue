@@ -97,7 +97,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { toolCategories } from '../../data/tools';
+import { toolCategories } from '~~/data/tools';
 import ToolCardGrid from '~/components/ToolCardGrid.vue';
 
 const randomToolLink: globalThis.Ref<string, string | undefined> = ref('/recon/dig');

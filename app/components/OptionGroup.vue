@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IGroup, IFlag } from '../../types/interfaces';
+import type { IGroup, IFlag } from '~~/types/interfaces';
 
 const props = defineProps<{
   groups: IGroup[];
@@ -101,7 +101,7 @@ const props = defineProps<{
 const getPlaceholders = (flagStr: string): string[] => {
   const matches = flagStr.match(/<([^>]+)>/g);
   if (!matches) {
-    return [flagStr.split(' ')[0]]; 
+    return [flagStr.split(' ')[0] as string]; 
   }
   return matches.map(m => m.slice(1, -1));
 };

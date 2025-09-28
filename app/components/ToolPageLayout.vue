@@ -137,9 +137,9 @@
 <script setup lang="ts">
 import { ref, reactive, watch, toRefs, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import type { ITool, IGroup, IFlag } from '../../types/interfaces'; // Pastikan IFlag diimpor
+import type { ITool, IGroup, IFlag } from '~~/types/interfaces';
 import OptionGroup from '~/components/OptionGroup.vue';
-import { toolMap } from '../../data/toolsMap';
+import { toolMap } from '~~/data/toolsMap';
 
 const props = defineProps<{
   tool: ITool;

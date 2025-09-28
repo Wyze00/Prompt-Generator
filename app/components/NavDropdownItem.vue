@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { NavLink } from '../../data/navigation';
+import type { NavLink } from '~~/types/navlink';
 
 defineOptions({
   name: 'NavDropdownItem'

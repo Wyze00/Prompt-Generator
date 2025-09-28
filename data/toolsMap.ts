@@ -1,4 +1,4 @@
-import { toolCategories } from '../data/tools';
+import { toolCategories } from '~~/data/tools';
 
 // Membuat sebuah objek pemetaan dari 'nama-tool' ke 'path/lengkap'
 // Contoh: { dig: '/recon/dig', gobuster: '/enumeration/gobuster' }
