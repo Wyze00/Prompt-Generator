@@ -30,6 +30,10 @@ Sebuah aplikasi web berbasis Nuxt.js untuk membuat dan mengelola *command prompt
     -   Ubah catatan Markdown menjadi data tool yang terstruktur secara otomatis menggunakan skrip `format`.
 -   **Struktur Skalabel**: Didesain dengan komponen rekursif dan halaman dinamis, memudahkan penambahan tool baru tanpa duplikasi kode.
 
+<p align="center">
+  <img src="./app/assets/image/alur.png" alt="Tampilan Command Prompt Generator" width="700"/>
+</p>
+
 ---
 
 ## 🛠️ Teknologi yang Digunakan
